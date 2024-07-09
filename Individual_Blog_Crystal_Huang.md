@@ -8,7 +8,7 @@
 
 ## Week 7
 
-- List the tasks you completed this week here
+- Completed answers to Task 1 part a, b, c, d and e (without refactoring)
 
 ## Week 8
 
