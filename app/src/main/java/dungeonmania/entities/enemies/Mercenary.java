@@ -83,6 +83,7 @@ public class Mercenary extends Enemy implements Interactable {
         GameMap map = game.getMap();
         Player player = game.getPlayer();
         if (allied) {
+            // Move adjacent to player
             nextPos = isAdjacentToPlayer ? player.getPreviousDistinctPosition()
                     : map.dijkstraPathFind(getPosition(), player.getPosition(), this);
             if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), nextPos))
@@ -100,6 +101,7 @@ public class Mercenary extends Enemy implements Interactable {
                 map.moveTo(this, nextPos);
             }
         } else if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
+            // Move away from player
             Position plrDiff = Position.calculatePositionBetween(map.getPlayer().getPosition(), getPosition());
 
             Position moveX = (plrDiff.getX() >= 0) ? Position.translateBy(getPosition(), Direction.RIGHT)
@@ -128,7 +130,7 @@ public class Mercenary extends Enemy implements Interactable {
             }
             nextPos = offset;
         } else {
-            // Follow hostile
+            // Follow hostile (default behaviour; calculate the shortest path to the player and move towards the player)
             nextPos = map.dijkstraPathFind(getPosition(), player.getPosition(), this);
         }
         map.moveTo(this, nextPos);
