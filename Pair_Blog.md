@@ -173,7 +173,7 @@ To better adhere to the open-closed principle, the design should be changed to u
 
 > ii. If you think the design is sufficient as it is, justify your decision. If you think the answer is no, pick a suitable Design Pattern that would improve the quality of the code and refactor the code accordingly.
 
-[Briefly explain what you did]
+To better adhere to the open-closed principle, the design should be changed to use inheritance and polymorphism. Each goal type should be represented by its own class, inheriting from an abstract Goal class. This way, new goal types can be added by creating new subclasses without modifying existing code.
 
 ### f) Open Refactoring
 
