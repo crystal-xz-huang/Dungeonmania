@@ -45,6 +45,7 @@ public class Spider extends Enemy {
 
     @Override
     public void move(Game game) {
+        // spider follows a fixed trajectory, and reverses direction when it hits a boulder
         Position nextPos = movementTrajectory.get(nextPositionElement);
         List<Entity> entities = game.getMap().getEntities(nextPos);
         if (entities != null && entities.size() > 0 && entities.stream().anyMatch(e -> e instanceof Boulder)) {

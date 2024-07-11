@@ -24,6 +24,7 @@ public class ZombieToast extends Enemy {
         Position nextPos;
         GameMap map = game.getMap();
         if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
+            // if player is invinvible, move away from player
             Position plrDiff = Position.calculatePositionBetween(map.getPlayer().getPosition(), getPosition());
 
             Position moveX = (plrDiff.getX() >= 0) ? Position.translateBy(getPosition(), Direction.RIGHT)
@@ -52,6 +53,7 @@ public class ZombieToast extends Enemy {
             }
             nextPos = offset;
         } else {
+            // if player is not invincible, move randomly
             List<Position> pos = getPosition().getCardinallyAdjacentPositions();
             pos = pos.stream().filter(p -> map.canMoveTo(this, p)).collect(Collectors.toList());
             if (pos.size() == 0) {
