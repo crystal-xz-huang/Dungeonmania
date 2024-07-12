@@ -6,8 +6,6 @@
 
 [Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/2)
 
-[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/3)
-
 > i. Look inside src/main/java/dungeonmania/entities/enemies. Where can you notice an instance of repeated code? Note down the particular offending lines/methods/fields.
 
 1. The method `move(Game game)` in `Mercernary` and `ZombieToast` - Random Movement Logic
@@ -157,7 +155,7 @@ The `Bomb` class implements the Observer Pattern. The `Bomb` class acts as the s
 
 ### c) Inheritance Design
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/3)
 
 > i. Name the code smell present in the above code. Identify all subclasses of Entity which have similar code smells that point towards the same root cause.
 
@@ -216,7 +214,7 @@ The code smell present in the `Exit` entity class is "**Refused Bequest**". This
 
 ### d) More Code Smells
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/4)
 
 > i. What design smell is present in the above description?
 
