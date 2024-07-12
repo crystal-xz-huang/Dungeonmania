@@ -276,7 +276,7 @@ In the `PlayerState` Classes:
 - Implemented the state-related behaviour for the method `applyBuff()` in the State classes
 - Initialised the `Player` with the base state in the constructor
 
-[Merge Request 2](/put/links/here)
+[Merge Request 2](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/6)
 
 Refactored the `Buildable` Entity classes to reduce the hardcoding, promote code reuse and improve the flexibility and maintainability.
 
