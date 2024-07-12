@@ -25,6 +25,7 @@ public class Mercenary extends Enemy implements Interactable {
     private double allyAttack;
     private double allyDefence;
     private boolean allied = false;
+    private boolean isAdjacentToPlayer = false;
 
     public Mercenary(Position position, double health, double attack, int bribeAmount, int bribeRadius,
             double allyAttack, double allyDefence) {
@@ -69,19 +70,29 @@ public class Mercenary extends Enemy implements Interactable {
     public void interact(Player player, Game game) {
         allied = true;
         bribe(player);
+        if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), getPosition()))
+            isAdjacentToPlayer = true;
     }
 
     @Override
     public MovementStrategy getMovementStrategy(Player player) {
-        if (allied) {
+        if (isAllied()) {
             return new AlliedMovement();
         } else if (player.getEffectivePotion() instanceof InvisibilityPotion) {
             return new RandomMovement();
         } else if (player.getEffectivePotion() instanceof InvincibilityPotion) {
             return new FleeMovement();
         } else {
-            return new HostileMovement();
+            return new FollowMovement();
         }
+    }
+
+    public void setAdjacentToPlayer() {
+        isAdjacentToPlayer = true;
+    }
+
+    public boolean isAdjacentToPlayer() {
+        return isAdjacentToPlayer;
     }
 
     @Override
