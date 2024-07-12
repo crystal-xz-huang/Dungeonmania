@@ -130,7 +130,7 @@ The **Strategy Pattern** can be used to encapsulate different movement behaviors
 
 > iii. Using your chosen Design Pattern, refactor the code to remove the repetition.
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/2)
 
 1. Defined a Strategy Interface called `MovementStrategy` with a `move()` method
 2. Created Concrete Strategy Classes for each movement strategy used by the enemy classes:
