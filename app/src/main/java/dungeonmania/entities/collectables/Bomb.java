@@ -9,10 +9,9 @@ import java.util.stream.Collectors;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.Switch;
-import dungeonmania.entities.inventory.InventoryItem;
 import dungeonmania.map.GameMap;
 
-public class Bomb extends Entity implements InventoryItem {
+public class Bomb extends Collectable {
     public enum State {
         SPAWNED, INVENTORY, PLACED
     }
@@ -37,32 +36,32 @@ public class Bomb extends Entity implements InventoryItem {
         explode(map);
     }
 
-    @Override
-    public boolean canMoveOnto(GameMap map, Entity entity) {
-        return true;
-    }
+    // @Override
+    // public void onOverlap(GameMap map, Entity entity) {
+    //     if (state != State.SPAWNED)
+    //         return;
+    //     if (entity instanceof Player) {
+    //         if (!((Player) entity).pickUp(this))
+    //             return;
+    //         subs.stream().forEach(s -> s.unsubscribe(this));
+    //         map.destroyEntity(this);
+    //     }
+    //     this.state = State.INVENTORY;
+    // }
 
     @Override
     public void onOverlap(GameMap map, Entity entity) {
-        if (state != State.SPAWNED)
+        if (state != State.SPAWNED) {
             return;
-        if (entity instanceof Player) {
-            if (!((Player) entity).pickUp(this))
-                return;
-            subs.stream().forEach(s -> s.unsubscribe(this));
-            map.destroyEntity(this);
         }
+        super.onOverlap(map, entity);
         this.state = State.INVENTORY;
     }
 
     @Override
-    public void onMovedAway(GameMap map, Entity entity) {
-        return;
-    }
-
-    @Override
-    public void onDestroy(GameMap gameMap) {
-        return;
+    public void handlePlayerOverlap(GameMap map) {
+        subs.stream().forEach(s -> s.unsubscribe(this));
+        super.handlePlayerOverlap(map);
     }
 
     public void onPutDown(GameMap map, Position p) {

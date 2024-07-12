@@ -182,7 +182,39 @@ The code smell present in the `Exit` entity class is "**Refused Bequest**". This
 
 > ii. Redesign the inheritance structure to solve the problem, in doing so remove the smells.
 
-[Briefly explain what you did]
+| Entities       | onOverlap | onMovedAway | onDestroy |
+|----------------|-----------|-------------|-----------|
+| **Static**     |           |             |           |
+| Wall           |           |             |           |
+| Exit           |           |             |           |
+| Boulder        | ✔️         |             |           |
+| Switch         | ✔️         | ✔️           |           |
+| Door           | ✔️         |             |           |
+| Portal         | ✔️         |             |           |
+| Zombie Toast Spawner |     |             | ✔️         |
+| **Moving**     |           |             |           |
+| Enemy          | ✔️         |             | ✔️         |
+| Player         | ✔️         |             |           |
+| **Collectable**|           |             |           |
+| Treasure       | ✔️         |             |           |
+| Key            | ✔️         |             |           |
+| Potion         | ✔️         |             |           |
+| Wood           | ✔️         |             |           |
+| Arrows         | ✔️         |             |           |
+| Bomb           | ✔️         |             |           |
+| Sword          | ✔️         |             |           |
+| **Buildables** |           |             |           |
+| Bow            |           |             |           |
+| Shield         |           |             |           |
+
+
+1. Provided default implementations that do nothing in the `Entity` superclass.
+2. Only the subclasses that require specific behaviour will override the methods with their custom implementation.
+3. Created a `Collectable`:
+    - The `Collectable` superclass extends `Entity` and implements `InventoryItem`.
+    - Overrides the `onOverlap()` method to provide a template method with a hook.
+    - `Treasure`, `Key`, `Potion`, `Wood`, `Arrows` and `Sword` subclasses all use the default implementation.
+    - `Bomb` overrides the hook method to unsubscribe all its registered observers.
 
 ### d) More Code Smells
 
