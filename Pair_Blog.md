@@ -278,9 +278,18 @@ In the `PlayerState` Classes:
 
 [Merge Request 2](/put/links/here)
 
-[Briefly explain what you did]
+Refactored the `Buildable` Entity classes to reduce the hardcoding, promote code reuse and improve the flexibility and maintainability.
 
-Add all other changes you made in the same format here:
+- Implemented the Builder Pattern to remove hardcoding of battle statistics:
+    - Created a new `BattleStatisticsBuilder` class to construct `BattleStatistics` objects with varying attributes.
+    - Modified the  `Buildable` class to take a `BattleStatisticsBuilder` object in its constructor.
+    - Each buildable entity now initialises its battle statistics attributes using the `BattleStatisticsBuilder`.
+    - Delegated the creation of `BattleStatistics` to the builder, promoting code reuse.
+    - Moved the `applyBuff()` method to the `Buildable` superclass.
+
+- Removed hardcoding of durability:
+    - Modified the `Buildable` class to take in the durability attribute through its constructor.
+    - Moved the `use()` and `getDurability()` methods to the `Buildable` superclass to eliminate code duplication in the subclasses.
 
 ## Task 2) Evolution of Requirements 👽
 
