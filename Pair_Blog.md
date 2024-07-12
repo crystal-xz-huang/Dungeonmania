@@ -267,7 +267,7 @@ To better adhere to the open-closed principle, the design should be changed to u
 
 ### f) Open Refactoring
 
-[Merge Request 1](/put/links/here)
+[Merge Request 1](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/5)
 
 Refactored the State Pattern for implementing the effects of potions (invisibility and invincibility) for the Player.
 In the `PlayerState` Classes:
