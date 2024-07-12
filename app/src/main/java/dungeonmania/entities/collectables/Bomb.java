@@ -36,32 +36,17 @@ public class Bomb extends Collectable {
         explode(map);
     }
 
-    // @Override
-    // public void onOverlap(GameMap map, Entity entity) {
-    //     if (state != State.SPAWNED)
-    //         return;
-    //     if (entity instanceof Player) {
-    //         if (!((Player) entity).pickUp(this))
-    //             return;
-    //         subs.stream().forEach(s -> s.unsubscribe(this));
-    //         map.destroyEntity(this);
-    //     }
-    //     this.state = State.INVENTORY;
-    // }
-
     @Override
     public void onOverlap(GameMap map, Entity entity) {
-        if (state != State.SPAWNED) {
+        if (state != State.SPAWNED)
             return;
+        if (entity instanceof Player) {
+            if (!((Player) entity).pickUp(this))
+                return;
+            subs.stream().forEach(s -> s.unsubscribe(this));
+            map.destroyEntity(this);
         }
-        super.onOverlap(map, entity);
         this.state = State.INVENTORY;
-    }
-
-    @Override
-    public void handlePlayerOverlap(GameMap map) {
-        subs.stream().forEach(s -> s.unsubscribe(this));
-        super.handlePlayerOverlap(map);
     }
 
     public void onPutDown(GameMap map, Position p) {

@@ -11,27 +11,13 @@ public abstract class Collectable extends Entity implements InventoryItem {
         super(position);
     }
 
-    // @Override
-    // public void onOverlap(GameMap map, Entity entity) {
-    //     if (entity instanceof Player) {
-    //         if (!((Player) entity).pickUp(this))
-    //             return;
-    //         map.destroyEntity(this);
-    //     }
-    // }
-
     @Override
     public void onOverlap(GameMap map, Entity entity) {
         if (entity instanceof Player) {
-            if (!((Player) entity).pickUp(this)) {
+            if (!((Player) entity).pickUp(this))
                 return;
-            }
-            handlePlayerOverlap(map);
+            map.destroyEntity(this);
         }
-    }
-
-    public void handlePlayerOverlap(GameMap map) {
-        map.destroyEntity(this);
     }
 
     @Override

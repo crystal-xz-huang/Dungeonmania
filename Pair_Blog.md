@@ -212,9 +212,7 @@ The code smell present in the `Exit` entity class is "**Refused Bequest**". This
 2. Only the subclasses that require specific behaviour will override the methods with their custom implementation.
 3. Created a `Collectable` class:
     - The `Collectable` superclass extends `Entity` and implements `InventoryItem`.
-    - Overrides the `onOverlap()` method to provide a template method with a hook.
-    - `Treasure`, `Key`, `Potion`, `Wood`, `Arrows` and `Sword` subclasses all use the default implementation.
-    - `Bomb` overrides the hook method to unsubscribe all its registered observers.
+    - Overrides the `onOverlap()` method to provide a default implementation.
 
 ### d) More Code Smells
 
@@ -224,13 +222,30 @@ The code smell present in the `Exit` entity class is "**Refused Bequest**". This
 
 The code smell present in the above description is "**Shotgun Surgery**". This is because a single change requires making many small changes to many different classes.
 
+In this case, the current `pickUp` method in the `Player` class is tightly coupled with the `Treasure` entity class. The `pickUp` method directly checks if the item is an instance of `Treasure`. This means that the `Player` class is responsible for knowing and handling specific types of entities. If we want to modify how an entity is picked up or introduce a new entity type, we would need to modify the existing code in `Player` as well as the separate entity classes that would be affected.
+
+
 > ii. Refactor the code to resolve the smell and underlying problem causing it.
 
-[Briefly explain what you did]
-Notes:
-We could define a Collectable Interface and update collectable entities which can be picked up to implement it.
-The Collectable Interface can define a `onPickUp` method which lets the entitites handle thier own pickup logic.
+Refactored the `pickUp` method to handle only the addition of the item to the inventory to reduce coupling:
 
+1. Defined a `Collectable` class that extends `InventoryItem` to represent collectable entities that can be picked up and placed in the player's inventory.
+2. Ensured `Collectable` entities implement `onOverlap()` method to handle their own pickup logic.
+3. Modified `pickup()` method to handle pickup logic at player level by directly adding the item to inventory with type-safety checks:
+    ```java
+    public boolean pickUp(Entity item) {
+        if (item instanceof InventoryItem) {
+            return inventory.add((InventoryItem) item);
+        }
+        return false;
+    }
+    ```
+4. Removed the `CollectedTreasureCount` field in `Player` and modified `getCollectedTreasureCount()` to return the number inventory items that are of type `Treasure`:
+    ```java
+    public int getCollectedTreasureCount() {
+        return inventory.count(Treasure.class);
+    }
+    ```
 
 ### e) Open-Closed Goals
 

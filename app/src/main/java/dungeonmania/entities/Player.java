@@ -28,9 +28,6 @@ public class Player extends Entity implements Battleable {
     private Queue<Potion> queue = new LinkedList<>();
     private Potion inEffective = null;
     private int nextTrigger = 0;
-
-    private int collectedTreasureCount = 0;
-
     private PlayerState state;
 
     public Player(Position position, double health, double attack) {
@@ -42,7 +39,7 @@ public class Player extends Entity implements Battleable {
     }
 
     public int getCollectedTreasureCount() {
-        return collectedTreasureCount;
+        return inventory.count(Treasure.class);
     }
 
     public boolean hasWeapon() {
@@ -89,10 +86,17 @@ public class Player extends Entity implements Battleable {
         return inventory.getEntity(itemUsedId);
     }
 
+    // public boolean pickUp(Entity item) {
+    //     if (item instanceof Treasure)
+    //         collectedTreasureCount++;
+    //     return inventory.add((InventoryItem) item);
+    // }
+
     public boolean pickUp(Entity item) {
-        if (item instanceof Treasure)
-            collectedTreasureCount++;
-        return inventory.add((InventoryItem) item);
+        if (item instanceof InventoryItem) {
+            return inventory.add((InventoryItem) item);
+        }
+        return false;
     }
 
     public Inventory getInventory() {
