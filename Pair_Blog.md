@@ -282,7 +282,7 @@ Refactored the `Buildable` Entity classes to reduce the hardcoding, promote code
 
 - Implemented the Builder Pattern to remove hardcoding of battle statistics:
     - Created a new `BattleStatisticsBuilder` class to construct `BattleStatistics` objects with varying attributes.
-    - Modified the  `Buildable` class to take a `BattleStatisticsBuilder` object in its constructor.
+    - Modified all `BattleItem` classes to take a `BattleStatisticsBuilder` object in its constructor.
     - Each buildable entity now initialises its battle statistics attributes using the `BattleStatisticsBuilder`.
     - Delegated the creation of `BattleStatistics` to the builder, promoting code reuse.
     - Moved the `applyBuff()` method to the `Buildable` superclass.
@@ -290,6 +290,23 @@ Refactored the `Buildable` Entity classes to reduce the hardcoding, promote code
 - Removed hardcoding of durability:
     - Modified the `Buildable` class to take in the durability attribute through its constructor.
     - Moved the `use()` and `getDurability()` methods to the `Buildable` superclass to eliminate code duplication in the subclasses.
+
+[Merge Request 3](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/7)
+
+Removed and replaced `Collectable` with `InventoryItem` to represent items that can be picked up.
+Removed code duplication across `InventoryItem`, `BattleItem` and `Buildable`.
+
+Modified `Buildable` to be an interface instead of an abstract class:
+- Extracted the previous methods to `BattleItem` for the subclasses Bow and Shield
+
+Modified `InventoryItem` to be an abstract class instead of an interface:
+- Represents items that are collectable and can be picked up.
+- Defined `onOverlap`, `canMoveOnto` and `use` methods with default implementations.
+
+Modified `BattleItem` to be an abstract class instead of an interface:
+- Extends from `InventoryItem` to represent inventory items that have buffs.
+- Defined `getDurability`, `applyBuff` methods with default implementations.
+- Override `use` to decrease durability.
 
 ## Task 2) Evolution of Requirements 👽
 

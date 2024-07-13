@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Queue;
 
 import dungeonmania.battles.BattleStatistics;
+import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.Treasure;
@@ -34,8 +35,9 @@ public class Player extends Entity implements Battleable {
 
     public Player(Position position, double health, double attack) {
         super(position);
-        battleStatistics = new BattleStatistics(health, attack, 0, BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
-                BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER);
+        battleStatistics = new BattleStatisticsBuilder().setHealth(health).setAttack(attack)
+                .setMagnifier(BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER)
+                .setReducer(BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER).build();
         inventory = new Inventory();
         state = new BaseState(this);
     }

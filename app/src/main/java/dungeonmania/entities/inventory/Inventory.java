@@ -105,8 +105,12 @@ public class Inventory {
         return items.stream().filter(clz::isInstance).map(clz::cast).collect(Collectors.toList());
     }
 
+    // public boolean hasWeapon() {
+    //     return getFirst(Sword.class) != null || getFirst(Bow.class) != null;
+    // }
+
     public boolean hasWeapon() {
-        return getFirst(Sword.class) != null || getFirst(Bow.class) != null;
+        return items.stream().anyMatch(i -> i instanceof BattleItem && ((BattleItem) i).isWeapon());
     }
 
     public BattleItem getWeapon() {

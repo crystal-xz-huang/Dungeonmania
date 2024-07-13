@@ -14,6 +14,10 @@ public abstract class PlayerState {
         return player;
     }
 
-    public abstract BattleStatistics applyBuff(BattleStatistics origin);
+    public BattleStatistics applyBuff(BattleStatistics origin) {
+        return BattleStatistics.applyBuff(origin, getBattleStatistics());
+    }
+
+    public abstract BattleStatistics getBattleStatistics();
 
 }

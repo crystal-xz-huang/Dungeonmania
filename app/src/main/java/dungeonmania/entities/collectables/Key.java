@@ -1,8 +1,9 @@
 package dungeonmania.entities.collectables;
 
+import dungeonmania.entities.inventory.InventoryItem;
 import dungeonmania.util.Position;
 
-public class Key extends Collectable {
+public class Key extends InventoryItem {
     private int number;
 
     public Key(Position position, int number) {

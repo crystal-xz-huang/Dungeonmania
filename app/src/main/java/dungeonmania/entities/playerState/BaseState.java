@@ -1,6 +1,7 @@
 package dungeonmania.entities.playerState;
 
 import dungeonmania.battles.BattleStatistics;
+import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.entities.Player;
 
 public class BaseState extends PlayerState {
@@ -9,8 +10,7 @@ public class BaseState extends PlayerState {
     }
 
     @Override
-    public BattleStatistics applyBuff(BattleStatistics origin) {
-        return origin;
+    public BattleStatistics getBattleStatistics() {
+        return new BattleStatisticsBuilder().build();
     }
-
 }
