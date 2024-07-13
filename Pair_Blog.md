@@ -4,7 +4,9 @@
 
 ### a) From DRY to Design Patterns
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/2)
+
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/3)
 
 > i. Look inside src/main/java/dungeonmania/entities/enemies. Where can you notice an instance of repeated code? Note down the particular offending lines/methods/fields.
 
@@ -130,8 +132,6 @@ The **Strategy Pattern** can be used to encapsulate different movement behaviors
 
 > iii. Using your chosen Design Pattern, refactor the code to remove the repetition.
 
-[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/2)
-
 1. Defined a Strategy Interface called `MovementStrategy` with a `move()` method
 2. Created Concrete Strategy Classes for each movement strategy used by the enemy classes:
     - `AlliedMovement`
@@ -182,7 +182,39 @@ The code smell present in the `Exit` entity class is "**Refused Bequest**". This
 
 > ii. Redesign the inheritance structure to solve the problem, in doing so remove the smells.
 
-[Briefly explain what you did]
+| Entities       | onOverlap | onMovedAway | onDestroy |
+|----------------|-----------|-------------|-----------|
+| **Static**     |           |             |           |
+| Wall           |           |             |           |
+| Exit           |           |             |           |
+| Boulder        | ✔️         |             |           |
+| Switch         | ✔️         | ✔️           |           |
+| Door           | ✔️         |             |           |
+| Portal         | ✔️         |             |           |
+| Zombie Toast Spawner |     |             | ✔️         |
+| **Moving**     |           |             |           |
+| Enemy          | ✔️         |             | ✔️         |
+| Player         | ✔️         |             |           |
+| **Collectable**|           |             |           |
+| Treasure       | ✔️         |             |           |
+| Key            | ✔️         |             |           |
+| Potion         | ✔️         |             |           |
+| Wood           | ✔️         |             |           |
+| Arrows         | ✔️         |             |           |
+| Bomb           | ✔️         |             |           |
+| Sword          | ✔️         |             |           |
+| **Buildables** |           |             |           |
+| Bow            |           |             |           |
+| Shield         |           |             |           |
+
+
+1. Provided default implementations for `onOverlap()`, `onMovedAway()` and `onDestroy()` in the `Entity` superclass.
+2. Only the subclasses that require specific behaviour will override the methods with their custom implementation.
+3. Created a `Collectable` class:
+    - The `Collectable` superclass extends `Entity` and implements `InventoryItem`.
+    - Overrides the `onOverlap()` method to provide a template method with a hook.
+    - `Treasure`, `Key`, `Potion`, `Wood`, `Arrows` and `Sword` subclasses all use the default implementation.
+    - `Bomb` overrides the hook method to unsubscribe all its registered observers.
 
 ### d) More Code Smells
 

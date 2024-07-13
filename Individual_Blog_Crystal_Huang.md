@@ -9,7 +9,8 @@
 ## Week 7
 
 - Completed answers to Task 1 part a, b, c, d and e (without refactoring)
-- Completed refactoring for Task1a
+- Completed refactoring for Task1a with Strategy Pattern
+- Completed refactoring for Task1c to fix Refused Bequest in Entity classes
 
 ## Week 8
 
