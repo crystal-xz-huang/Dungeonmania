@@ -308,7 +308,7 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 - Defined `getDurability`, `applyBuff` methods with default implementations.
 - Override `use` to decrease durability.
 
-[Merge Request 4](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/9)
+[Merge Request 4](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/10)
 
 1) The previous design of the `Inventory` class knew about the internal workings of the inventory items, such as the specific requirements for building items and which items are weapons. This is a code smell because it tightly couples the `Inventory` class to the individual item classes. It also violates the SRP and reduces the flexibility and maintainability of the `Inventory` class.
 
