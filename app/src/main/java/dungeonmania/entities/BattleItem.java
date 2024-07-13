@@ -20,12 +20,8 @@ public abstract class BattleItem extends InventoryItem {
     public void use(Game game) {
         durability--;
         if (durability <= 0) {
-            game.getPlayer().remove(this);
+            game.remove(this);
         }
-    }
-
-    public int getDurability() {
-        return durability;
     }
 
     public BattleStatistics applyBuff(BattleStatistics origin) {

@@ -3,7 +3,11 @@ package dungeonmania.entities;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.ArrayList;
 
+import java.util.stream.Collectors;
+
+import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.battles.Battleable;
@@ -32,6 +36,7 @@ public class Player extends Entity implements Battleable {
     private Potion inEffective = null;
     private int nextTrigger = 0;
     private PlayerState state;
+    List<BattleItem> usedBattleItems = new ArrayList<>();
 
     public Player(Position position, double health, double attack) {
         super(position);
@@ -48,10 +53,6 @@ public class Player extends Entity implements Battleable {
 
     public boolean hasWeapon() {
         return inventory.hasWeapon();
-    }
-
-    public BattleItem getWeapon() {
-        return inventory.getWeapon();
     }
 
     public List<String> getBuildables() {
@@ -90,12 +91,6 @@ public class Player extends Entity implements Battleable {
         return inventory.getEntity(itemUsedId);
     }
 
-    // public boolean pickUp(Entity item) {
-    //     if (item instanceof Treasure)
-    //         collectedTreasureCount++;
-    //     return inventory.add((InventoryItem) item);
-    // }
-
     public boolean pickUp(Entity item) {
         if (item instanceof InventoryItem) {
             return inventory.add((InventoryItem) item);
@@ -113,8 +108,9 @@ public class Player extends Entity implements Battleable {
 
     public <T extends InventoryItem> void use(Class<T> itemType) {
         T item = inventory.getFirst(itemType);
-        if (item != null)
+        if (item != null) {
             inventory.remove(item);
+        }
     }
 
     public void use(Bomb bomb, GameMap map) {
@@ -135,10 +131,6 @@ public class Player extends Entity implements Battleable {
             changeState(new InvisibleState(this));
         }
         nextTrigger = currentTick + inEffective.getDuration();
-    }
-
-    public Queue<Potion> getPotions() {
-        return queue;
     }
 
     public void changeState(PlayerState playerState) {
@@ -172,7 +164,53 @@ public class Player extends Entity implements Battleable {
         return inventory.count(itemType);
     }
 
-    public BattleStatistics applyBuff(BattleStatistics origin) {
-        return state.applyBuff(origin);
+    @Override
+    public double getHealth() {
+        return battleStatistics.getHealth();
+    }
+
+    @Override
+    public void setHealth(double health) {
+        battleStatistics.setHealth(health);
+    }
+
+    public BattleStatistics applyBuff(Game game) {
+        BattleStatistics buffedStatistics = applyPotionBuff(battleStatistics);
+        buffedStatistics = applyItemBuff(game, buffedStatistics);
+        buffedStatistics = applyAlliedMercenaryBuffs(game, buffedStatistics);
+        return buffedStatistics;
+    }
+
+    private BattleStatistics applyAlliedMercenaryBuffs(Game game, BattleStatistics origin) {
+        List<Mercenary> allies = game.getEntities(Mercenary.class).stream().filter(Mercenary::isAllied)
+                .collect(Collectors.toList());
+        for (Mercenary merc : allies) {
+            origin = BattleStatistics.applyBuff(origin, merc.getBattleStatistics());
+        }
+        return origin;
+    }
+
+    private BattleStatistics applyItemBuff(Game game, BattleStatistics origin) {
+        for (BattleItem item : inventory.getEntities(BattleItem.class)) {
+            origin = item.applyBuff(origin);
+            usedBattleItems.add(item);
+            item.use(game);
+        }
+        return origin;
+    }
+
+    private BattleStatistics applyPotionBuff(BattleStatistics origin) {
+        Potion effectivePotion = getEffectivePotion();
+        if (effectivePotion != null) {
+            origin = state.applyBuff(origin);
+        }
+        return origin;
+    }
+
+    public List<BattleItem> getUsedBattleItems() {
+        // return a copy of the used items
+        List<BattleItem> copy = new ArrayList<>(usedBattleItems);
+        usedBattleItems.clear();
+        return copy;
     }
 }
