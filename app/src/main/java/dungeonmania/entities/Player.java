@@ -36,7 +36,7 @@ public class Player extends Entity implements Battleable {
     private Potion inEffective = null;
     private int nextTrigger = 0;
     private PlayerState state;
-    List<BattleItem> usedBattleItems = new ArrayList<>();
+    private List<BattleItem> usedBattleItems = new ArrayList<>();
 
     public Player(Position position, double health, double attack) {
         super(position);
