@@ -28,9 +28,4 @@ public abstract class InventoryItem extends Entity {
     public void use(Game game) {
         return;
     }
-
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName();
-    }
 }

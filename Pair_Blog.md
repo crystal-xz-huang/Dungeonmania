@@ -308,6 +308,11 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 - Defined `getDurability`, `applyBuff` methods with default implementations.
 - Override `use` to decrease durability.
 
+[Merge Request 4](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/8)
+
+
+
+
 ## Task 2) Evolution of Requirements 👽
 
 ### a) Microevolution - Enemy Goal
