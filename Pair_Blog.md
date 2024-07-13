@@ -308,10 +308,65 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 - Defined `getDurability`, `applyBuff` methods with default implementations.
 - Override `use` to decrease durability.
 
-[Merge Request 4](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/8)
+[Merge Request 4](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/9)
+
+1) The previous design of the `Inventory` class knew about the internal workings of the inventory items, such as the specific requirements for building items and which items are weapons. This is a code smell because it tightly couples the `Inventory` class to the individual item classes. It also violates the SRP and reduces the flexibility and maintainability of the `Inventory` class.
+
+    - Delegated the build requirements checks to the respective classes `Bow` and `Shield` instead:
+        *before:*
+        ```java
+        public List<String> getBuildables() {
+            int wood = count(Wood.class);
+            int arrows = count(Arrow.class);
+            int treasure = count(Treasure.class);
+            int keys = count(Key.class);
+            List<String> result = new ArrayList<>();
+
+            if (wood >= 1 && arrows >= 3) {
+                result.add("bow");
+            }
+            if (wood >= 2 && (treasure >= 1 || keys >= 1)) {
+                result.add("shield");
+            }
+            return result;
+        }
+        ```
+        *after:*
+        ```java
+        public List<String> getBuildables() {
+            List<String> result = new ArrayList<>();
+            if (Bow.isBuildable(this)) {
+                result.add("bow");
+            }
+            if (Shield.isBuildable(this)) {
+                result.add("shield");
+            }
+            return result;
+        }
+        ```
+
+    - Encapsulated the build logic in each item clas to simplify the `checkBuildCriteria()` method: `Bow.build(factory, this)`
 
 
+    - Fixed the logic in `build()` in `Player` to check the build criteria for the passed entity and removed the boolean flag `remove` from `checkBuildCriteria()` since it is always true:
+        *before:*
+        ```java
+        public boolean build(String entity, EntityFactory factory) {
+            InventoryItem item = inventory.checkBuildCriteria(this, true, entity.equals("shield"), factory);
+            // ...
+        }
+        ```
+        *after:*
+        ```java
+        public boolean build(String entity, EntityFactory factory) {
+            InventoryItem item = inventory.checkBuildCriteria(this, entity, factory);
+            // ...
+        }
+        ```
 
+    - Refactored `hasWeapon()` and `getWeapon()` methods to not depend on specific item types (`Sword` or `Bow`) in order to determine if an item is a weapon. Instead, the checks for weapon are now delegated to the `BattleItem` classes.
+
+2) Reduced the length of the **long methods** `onPutDown()` and `explode()` in the `Bomb` class by isolating the logic for subscribing to switches and destroying entities and extracting them to helper methods `subscribeToAdjacentSwitches()` and `destroyEntitiesInRadius()`.
 
 ## Task 2) Evolution of Requirements 👽
 
