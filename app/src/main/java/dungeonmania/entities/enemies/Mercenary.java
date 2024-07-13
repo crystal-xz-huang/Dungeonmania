@@ -2,6 +2,7 @@ package dungeonmania.entities.enemies;
 
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
+import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Interactable;
 import dungeonmania.entities.Player;
@@ -104,6 +105,6 @@ public class Mercenary extends Enemy implements Interactable {
     public BattleStatistics getBattleStatistics() {
         if (!allied)
             return super.getBattleStatistics();
-        return new BattleStatistics(0, allyAttack, allyDefence, 1, 1);
+        return new BattleStatisticsBuilder().setAttack(allyAttack).setDefence(allyDefence).build();
     }
 }

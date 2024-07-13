@@ -9,12 +9,10 @@ import dungeonmania.util.Position;
 
 public abstract class Buildable extends Entity implements InventoryItem, BattleItem {
     private int durability;
-    private BattleStatisticsBuilder statsBuilder;
 
-    public Buildable(Position position, int durability, BattleStatisticsBuilder statsBuilder) {
+    public Buildable(Position position, int durability) {
         super(position);
         this.durability = durability;
-        this.statsBuilder = statsBuilder;
     }
 
     @Override
@@ -34,9 +32,4 @@ public abstract class Buildable extends Entity implements InventoryItem, BattleI
     public BattleStatistics applyBuff(BattleStatistics origin) {
         return BattleStatistics.applyBuff(origin, getBattleStatistics());
     }
-
-    private BattleStatistics getBattleStatistics() {
-        return statsBuilder.build();
-    }
-
 }

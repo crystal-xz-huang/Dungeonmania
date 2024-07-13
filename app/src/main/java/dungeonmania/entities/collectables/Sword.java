@@ -2,6 +2,7 @@ package dungeonmania.entities.collectables;
 
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
+import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.entities.BattleItem;
 import dungeonmania.util.Position;
 
@@ -30,12 +31,17 @@ public class Sword extends Collectable implements BattleItem {
     }
 
     @Override
-    public BattleStatistics applyBuff(BattleStatistics origin) {
-        return BattleStatistics.applyBuff(origin, new BattleStatistics(0, attack, 0, 1, 1));
+    public int getDurability() {
+        return durability;
     }
 
     @Override
-    public int getDurability() {
-        return durability;
+    public BattleStatistics applyBuff(BattleStatistics origin) {
+        return BattleStatistics.applyBuff(origin, getBattleStatistics());
+    }
+
+    @Override
+    public BattleStatistics getBattleStatistics() {
+        return new BattleStatisticsBuilder().setAttack(attack).build();
     }
 }

@@ -1,5 +1,6 @@
 package dungeonmania.entities.collectables;
 
+import dungeonmania.Game;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.inventory.InventoryItem;
@@ -23,5 +24,9 @@ public abstract class Collectable extends Entity implements InventoryItem {
     @Override
     public boolean canMoveOnto(GameMap map, Entity entity) {
         return true;
+    }
+
+    public void use(Game game) {
+        return;
     }
 }
