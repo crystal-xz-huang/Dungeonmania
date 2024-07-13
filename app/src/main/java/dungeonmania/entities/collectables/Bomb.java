@@ -51,7 +51,8 @@ public class Bomb extends InventoryItem {
     }
 
     public void onPutDown(GameMap map, Position p) {
-        translate(Position.calculatePositionBetween(getPosition(), p));
+        Position offset = Position.calculatePositionBetween(getPosition(), p);
+        setPosition(Position.translateBy(getPosition(), offset));
         map.addEntity(this);
         this.state = State.PLACED;
         subscribeToAdjacentSwitches(map);

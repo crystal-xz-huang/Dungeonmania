@@ -368,6 +368,14 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 
 2) Reduced the length of the **long methods** `onPutDown()` and `explode()` in the `Bomb` class by isolating the logic for subscribing to switches and destroying entities and extracting them to helper methods `subscribeToAdjacentSwitches()` and `destroyEntitiesInRadius()`.
 
+
+[Merge Request 5](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/11)
+
+- Replaced the deprecated `translate()` methods in `Entity` using `setPosition()` instead in `Bomb` and `GameMap`.
+
+
+
+
 ## Task 2) Evolution of Requirements 👽
 
 ### a) Microevolution - Enemy Goal
