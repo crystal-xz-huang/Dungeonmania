@@ -1,15 +1,13 @@
 package dungeonmania.entities.collectables.potions;
 
-import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.BattleItem;
-import dungeonmania.entities.collectables.Collectable;
 import dungeonmania.util.Position;
 
-public abstract class Potion extends Collectable implements BattleItem {
+public abstract class Potion extends BattleItem {
     private int duration;
 
     public Potion(Position position, int duration) {
-        super(position);
+        super(position, 1);
         this.duration = duration;
     }
 
@@ -18,12 +16,7 @@ public abstract class Potion extends Collectable implements BattleItem {
     }
 
     @Override
-    public BattleStatistics applyBuff(BattleStatistics origin) {
-        return BattleStatistics.applyBuff(origin, getBattleStatistics());
-    }
-
-    @Override
-    public int getDurability() {
-        return 1;
+    public boolean isWeapon() {
+        return false;
     }
 }

@@ -26,10 +26,6 @@ public abstract class Entity {
         this.facing = null;
     }
 
-    public boolean canMoveOnto(GameMap map, Entity entity) {
-        return false;
-    }
-
     // use setPosition
     @Deprecated(forRemoval = true)
     public void translate(Direction direction) {
@@ -56,6 +52,10 @@ public abstract class Entity {
 
     public void onDestroy(GameMap gameMap) {
         return;
+    }
+
+    public boolean canMoveOnto(GameMap map, Entity entity) {
+        return false;
     }
 
     public Position getPosition() {

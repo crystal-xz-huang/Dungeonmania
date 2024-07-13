@@ -1,47 +1,31 @@
 package dungeonmania.entities.collectables;
 
-import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.entities.BattleItem;
 import dungeonmania.util.Position;
 
-public class Sword extends Collectable implements BattleItem {
+public class Sword extends BattleItem {
     public static final double DEFAULT_ATTACK = 1;
     public static final double DEFAULT_ATTACK_SCALE_FACTOR = 1;
     public static final int DEFAULT_DURABILITY = 5;
     public static final double DEFAULT_DEFENCE = 0;
     public static final double DEFAULT_DEFENCE_SCALE_FACTOR = 1;
 
-    private int durability;
     private double attack;
 
     public Sword(Position position, double attack, int durability) {
-        super(position);
+        super(position, durability);
         this.attack = attack;
-        this.durability = durability;
-    }
-
-    @Override
-    public void use(Game game) {
-        durability--;
-        if (durability <= 0) {
-            game.getPlayer().remove(this);
-        }
-    }
-
-    @Override
-    public int getDurability() {
-        return durability;
-    }
-
-    @Override
-    public BattleStatistics applyBuff(BattleStatistics origin) {
-        return BattleStatistics.applyBuff(origin, getBattleStatistics());
     }
 
     @Override
     public BattleStatistics getBattleStatistics() {
         return new BattleStatisticsBuilder().setAttack(attack).build();
+    }
+
+    @Override
+    public boolean isWeapon() {
+        return true;
     }
 }
