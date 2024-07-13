@@ -8,89 +8,120 @@
 
 > i. Look inside src/main/java/dungeonmania/entities/enemies. Where can you notice an instance of repeated code? Note down the particular offending lines/methods/fields.
 
-1. Random Movement Logic in `Mercernary` and `ZombieToast`
-The logic for moving to a random position in the method `move(Game game)` is the same in both `Mercernary` and `ZombieToast`.
+1. The method `move(Game game)` in `Mercernary` and `ZombieToast` - Random Movement Logic
 
-In `ZombieToast`, if the player does not have an `InvincibilityPotion`, it moves randomly:
-```java
-List<Position> pos = getPosition().getCardinallyAdjacentPositions();
-pos = pos.stream().filter(p -> map.canMoveTo(this, p)).collect(Collectors.toList());
-if (pos.size() == 0) {
-    nextPos = getPosition();
-} else {
-    nextPos = pos.get(randGen.nextInt(pos.size()));
-}
-```
+    The logic for moving to a random position in the method `move(Game game)` is the same in both `Mercernary` and `ZombieToast`.
 
-In `Mercernary`, if the player has an `InvisibilityPotion`, it moves to a random location:
-```java
-Random randGen = new Random();
-List<Position> pos = getPosition().getCardinallyAdjacentPositions();
-pos = pos.stream().filter(p -> map.canMoveTo(this, p)).collect(Collectors.toList());
-if (pos.size() == 0) {
-    nextPos = getPosition();
-    map.moveTo(this, nextPos);
-} else {
-    nextPos = pos.get(randGen.nextInt(pos.size()));
-    map.moveTo(this, nextPos);
-}
-```
-
-The only differences are that in `ZombieToast`, the random generator (randGen) is initialised as a class field, whereas in `Mercernary`, it is created locally within the movement logic. Additionally, the position is instantly set in `Mercernary` with `map.moveTo(this, nextPos)` once confirmed.
-
-2. Invincibility Movement Logic in `Mercernary` and `ZombieToast`
-The logic for handling movement when the player has an `InvincibilityPotion` is similar in both `Mercernary` and `ZombieToast`. Specifically, this part of the code which moves the entity away from the player is repeated in the method `move(Game game)`:
-
-```java
-if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
-    Position plrDiff = Position.calculatePositionBetween(map.getPlayer().getPosition(), getPosition());
-
-    Position moveX = (plrDiff.getX() >= 0) ? Position.translateBy(getPosition(), Direction.RIGHT)
-            : Position.translateBy(getPosition(), Direction.LEFT);
-    Position moveY = (plrDiff.getY() >= 0) ? Position.translateBy(getPosition(), Direction.UP)
-            : Position.translateBy(getPosition(), Direction.DOWN);
-    Position offset = getPosition();
-    if (plrDiff.getY() == 0 && map.canMoveTo(this, moveX))
-        offset = moveX;
-    else if (plrDiff.getX() == 0 && map.canMoveTo(this, moveY))
-        offset = moveY;
-    else if (Math.abs(plrDiff.getX()) >= Math.abs(plrDiff.getY())) {
-        if (map.canMoveTo(this, moveX))
-            offset = moveX;
-        else if (map.canMoveTo(this, moveY))
-            offset = moveY;
-        else
-            offset = getPosition();
+    In `ZombieToast`, if the player does not have an `InvincibilityPotion`, it moves randomly:
+    ```java
+    List<Position> pos = getPosition().getCardinallyAdjacentPositions();
+    pos = pos.stream().filter(p -> map.canMoveTo(this, p)).collect(Collectors.toList());
+    if (pos.size() == 0) {
+        nextPos = getPosition();
     } else {
-        if (map.canMoveTo(this, moveY))
-            offset = moveY;
-        else if (map.canMoveTo(this, moveX))
-            offset = moveX;
-        else
-            offset = getPosition();
+        nextPos = pos.get(randGen.nextInt(pos.size()));
     }
-    nextPos = offset;
-}
-```
+    ```
+
+    In `Mercernary`, if the player has an `InvisibilityPotion`, it moves to a random location:
+    ```java
+    Random randGen = new Random();
+    List<Position> pos = getPosition().getCardinallyAdjacentPositions();
+    pos = pos.stream().filter(p -> map.canMoveTo(this, p)).collect(Collectors.toList());
+    if (pos.size() == 0) {
+        nextPos = getPosition();
+        map.moveTo(this, nextPos);
+    } else {
+        nextPos = pos.get(randGen.nextInt(pos.size()));
+        map.moveTo(this, nextPos);
+    }
+    ```
+
+    The only differences are that in `ZombieToast`, the random generator (`randGen`) is initialised as a class field, whereas in `Mercernary`, it is created locally within the movement logic.
+    Additionally, the position is instantly set in `Mercernary` with `map.moveTo(this, nextPos)` once confirmed.
+
+2. The method `move(Game game)` in `Mercernary` and `ZombieToast` - Invincibility Movement Logic
+
+    The logic for handling movement when the player has an `InvincibilityPotion` is the same in both `Mercernary` and `ZombieToast`.
+    Specifically, this part of the code which moves the entity away from the player is repeated in the method `move(Game game)`:
+
+    ```java
+    if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
+        Position plrDiff = Position.calculatePositionBetween(map.getPlayer().getPosition(), getPosition());
+
+        Position moveX = (plrDiff.getX() >= 0) ? Position.translateBy(getPosition(), Direction.RIGHT)
+                : Position.translateBy(getPosition(), Direction.LEFT);
+        Position moveY = (plrDiff.getY() >= 0) ? Position.translateBy(getPosition(), Direction.UP)
+                : Position.translateBy(getPosition(), Direction.DOWN);
+        Position offset = getPosition();
+        if (plrDiff.getY() == 0 && map.canMoveTo(this, moveX))
+            offset = moveX;
+        else if (plrDiff.getX() == 0 && map.canMoveTo(this, moveY))
+            offset = moveY;
+        else if (Math.abs(plrDiff.getX()) >= Math.abs(plrDiff.getY())) {
+            if (map.canMoveTo(this, moveX))
+                offset = moveX;
+            else if (map.canMoveTo(this, moveY))
+                offset = moveY;
+            else
+                offset = getPosition();
+        } else {
+            if (map.canMoveTo(this, moveY))
+                offset = moveY;
+            else if (map.canMoveTo(this, moveX))
+                offset = moveX;
+            else
+                offset = getPosition();
+        }
+        nextPos = offset;
+    }
+    ```
 
 3. The method `onDestroy(GameMap map)` in `Enemy` and `ZombieToastSpawner`
-This method defined in `Enemy` is repeated exactly the same in `ZombieToastSpawner`. This is because `ZombieToastSpawner` does not extend from `Enemy` and therefore does not inherit this implementation:
 
-```java
-public void onDestroy(GameMap map) {
-    Game g = map.getGame();
-    g.unsubscribe(getId());
-}
-```
+    This method defined in `Enemy` is repeated exactly the same in `ZombieToastSpawner`.
+    This is because `ZombieToastSpawner` does not extend from `Enemy` and therefore does not inherit this implementation:
+
+    ```java
+    public void onDestroy(GameMap map) {
+        Game g = map.getGame();
+        g.unsubscribe(getId());
+    }
+    ```
 
 4. The method `onMovedAway(GameMap map, Entity entity)` in `Enemy` and `ZombieToastSpawner`
-This method is the same in both, which simply returns and does nothing:
 
-```java
-public void onMovedAway(GameMap map, Entity entity) {
-    return;
-}
-```
+    This method is the same in both, which simply returns and does nothing:
+
+    ```java
+    public void onMovedAway(GameMap map, Entity entity) {
+        return;
+    }
+    ```
+
+5. Repeated fields for health and attack in `Mercernary`, `Spider` and `ZombieToast`
+
+    For Mercenary:
+
+    ```java
+    public static final double DEFAULT_ATTACK = 5.0;
+    public static final double DEFAULT_HEALTH = 10.0;
+    ```
+
+    For Spider:
+
+    ```java
+    public static final double DEFAULT_ATTACK = 5;
+    public static final double DEFAULT_HEALTH = 10;
+    ```
+
+    For ZombieToast:
+
+    ```java
+    public static final double DEFAULT_HEALTH = 5.0;
+    public static final double DEFAULT_ATTACK = 6.0;
+    ```
+
 
 > ii. What Design Pattern could be used to improve the quality of the code and avoid repetition? Justify your choice by relating the scenario to the key characteristics of your chosen Design Pattern.
 
@@ -99,7 +130,19 @@ The **Strategy Pattern** can be used to encapsulate different movement behaviors
 
 > iii. Using your chosen Design Pattern, refactor the code to remove the repetition.
 
-[Briefly explain what you did]
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/2)
+
+1. Defined a Strategy Interface called `MovementStrategy` with a `move()` method
+2. Created Concrete Strategy Classes for each movement strategy used by the enemy classes:
+    - `AlliedMovement`
+    - `HostileMovement`
+    - `FleeMovement`
+    - `RandomMovement`
+    - `SpiderMovement`
+3. Refactored the Enemy class to use the strategy pattern for movement:
+    - Defined an abstract `getMovementStrategy()` method for subclasses to implement
+    - Modified the `move()` method to delegate movement behaviour to the strategy object returned by `getMovementStrategy()`
+
 
 ### b) Observer Pattern
 
@@ -119,6 +162,7 @@ The `Bomb` class implements the Observer Pattern. The `Bomb` class acts as the s
 > i. Name the code smell present in the above code. Identify all subclasses of Entity which have similar code smells that point towards the same root cause.
 
 The code smell present in the `Exit` entity class is "**Refused Bequest**". This is because `Exit` inherits methods from `Entity` that is does not use or need. Other subclasses of `Entity` which face this problem are:
+
 - `Buildable`
 - `Potion`
 - `Arrow`
@@ -151,7 +195,8 @@ The code smell present in the above description is "**Shotgun Surgery**". This i
 > ii. Refactor the code to resolve the smell and underlying problem causing it.
 
 [Briefly explain what you did]
-Notes: We could define a Collectable Interface and update collectable entities which can be picked up to implement it.
+Notes:
+We could define a Collectable Interface and update collectable entities which can be picked up to implement it.
 The Collectable Interface can define a `onPickUp` method which lets the entitites handle thier own pickup logic.
 
 

@@ -5,6 +5,7 @@ import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
+import dungeonmania.entities.movement.MovementStrategy;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
@@ -46,5 +47,12 @@ public abstract class Enemy extends Entity implements Battleable {
         return;
     }
 
-    public abstract void move(Game game);
+    public void move(Game game) {
+        Player player = game.getPlayer();
+        GameMap map = game.getMap();
+        MovementStrategy movementStrategy = getMovementStrategy(player);
+        movementStrategy.move(this, map, player);
+    }
+
+    public abstract MovementStrategy getMovementStrategy(Player player);
 }
