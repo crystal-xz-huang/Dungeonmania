@@ -52,4 +52,15 @@ public abstract class Enemy extends Entity implements Battleable {
     }
 
     public abstract MovementStrategy getMovementStrategy(Player player);
+
+    @Override
+    public double getHealth() {
+        return battleStatistics.getHealth();
+    }
+
+    @Override
+    public void setHealth(double health) {
+        battleStatistics.setHealth(health);
+    }
+
 }

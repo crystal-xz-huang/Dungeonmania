@@ -373,8 +373,13 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 
 - Replaced the deprecated `translate()` methods in `Entity` using `setPosition()` instead in `Bomb` and `GameMap`.
 
+- Refactored `BattleFacade` to remove violations of LOD:
+    - Encapsulated the logic for applying buffs within the `Player` class
+    - Updated Battleable interface to include `setHealth()` and `getHealth()` so that `BattleFacade` can query the health directly from the `Player` and `Enemy` classes.
+    - Defined helper functions to log the battle response and improve readibility\
 
-
+- Refactored `BattleItem` to remove violations of LOD:
+    - Added new method in Game class to remove items so that `use(Game game)` does not use method chaining to remove the item from the player's inventory
 
 ## Task 2) Evolution of Requirements 👽
 
