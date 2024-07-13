@@ -267,9 +267,14 @@ To better adhere to the open-closed principle, the design should be changed to u
 
 ### f) Open Refactoring
 
-[Merge Request 1](/put/links/here)
+[Merge Request 1](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/5)
 
-[Briefly explain what you did]
+Refactored the State Pattern for implementing the effects of potions (invisibility and invincibility) for the Player.
+In the `PlayerState` Classes:
+- Removed boolean flags (`isInvincible`, `isInvisible`)
+- Removed all transition methods (`transitionBase()`, `transitionInvincible()`, `transitionInvisible()`) since the `Player` context class should handle all state transitions
+- Implemented the state-related behaviour for the method `applyBuff()` in the State classes
+- Initialised the `Player` with the base state in the constructor
 
 [Merge Request 2](/put/links/here)
 

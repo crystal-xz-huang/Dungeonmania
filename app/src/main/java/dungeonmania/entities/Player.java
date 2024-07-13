@@ -15,6 +15,8 @@ import dungeonmania.entities.enemies.Mercenary;
 import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.entities.inventory.InventoryItem;
 import dungeonmania.entities.playerState.BaseState;
+import dungeonmania.entities.playerState.InvincibleState;
+import dungeonmania.entities.playerState.InvisibleState;
 import dungeonmania.entities.playerState.PlayerState;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Direction;
@@ -121,16 +123,20 @@ public class Player extends Entity implements Battleable {
     public void triggerNext(int currentTick) {
         if (queue.isEmpty()) {
             inEffective = null;
-            state.transitionBase();
+            changeState(new BaseState(this));
             return;
         }
         inEffective = queue.remove();
         if (inEffective instanceof InvincibilityPotion) {
-            state.transitionInvincible();
+            changeState(new InvincibleState(this));
         } else {
-            state.transitionInvisible();
+            changeState(new InvisibleState(this));
         }
         nextTrigger = currentTick + inEffective.getDuration();
+    }
+
+    public Queue<Potion> getPotions() {
+        return queue;
     }
 
     public void changeState(PlayerState playerState) {
@@ -165,11 +171,6 @@ public class Player extends Entity implements Battleable {
     }
 
     public BattleStatistics applyBuff(BattleStatistics origin) {
-        if (state.isInvincible()) {
-            return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, true, true));
-        } else if (state.isInvisible()) {
-            return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, false, false));
-        }
-        return origin;
+        return state.applyBuff(origin);
     }
 }
