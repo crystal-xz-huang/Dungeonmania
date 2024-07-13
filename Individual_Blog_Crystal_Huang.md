@@ -11,6 +11,8 @@
 - Completed answers to Task 1 part a, b, c, d and e (without refactoring)
 - Completed refactoring for Task1a with Strategy Pattern
 - Completed refactoring for Task1c to fix Refused Bequest in Entity classes
+- Completed refactoring for Task1d to fix Shotgun Surgery in Player classes
+
 
 ## Week 8
 
