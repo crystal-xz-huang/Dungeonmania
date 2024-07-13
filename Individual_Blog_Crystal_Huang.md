@@ -12,7 +12,8 @@
 - Completed refactoring for Task1a with Strategy Pattern
 - Completed refactoring for Task1c to fix Refused Bequest in Entity classes
 - Completed refactoring for Task1d to fix Shotgun Surgery in Player classes
-- Refactored PlayerState Task1f
+- Refactored the State Pattern design in PlayerState for Task1f
+- Refactored the Buildable entity classes by implementing the Builder pattern for Task 1f
 
 ## Week 8
 
