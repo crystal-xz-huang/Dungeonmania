@@ -3,6 +3,7 @@ package dungeonmania;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import dungeonmania.battles.BattleFacade;
 import dungeonmania.entities.Entity;
@@ -12,6 +13,7 @@ import dungeonmania.entities.Player;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
+import dungeonmania.entities.inventory.InventoryItem;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.Goal;
 import dungeonmania.map.GameMap;
@@ -77,10 +79,10 @@ public class Game {
 
     public void battle(Player player, Enemy enemy) {
         battleFacade.battle(this, player, enemy);
-        if (player.getBattleStatistics().getHealth() <= 0) {
+        if (player.getHealth() <= 0) {
             map.destroyEntity(player);
         }
-        if (enemy.getBattleStatistics().getHealth() <= 0) {
+        if (enemy.getHealth() <= 0) {
             map.destroyEntity(enemy);
         }
     }
@@ -202,5 +204,13 @@ public class Game {
 
     public BattleFacade getBattleFacade() {
         return battleFacade;
+    }
+
+    public <T> List<T> getEntities(Class<T> clz) {
+        return map.getEntities().stream().filter(clz::isInstance).map(clz::cast).collect(Collectors.toList());
+    }
+
+    public void remove(InventoryItem item) {
+        player.remove(item);
     }
 }

@@ -14,6 +14,7 @@
 - Completed refactoring for Task1d to fix Shotgun Surgery in Player classes
 - Refactored the State Pattern design in PlayerState for Task1f
 - Refactored the Buildable entity classes by implementing the Builder pattern for Task 1f
+- Removed LOD violations from BattleFacade and BattleItem classes
 
 ## Week 8
 

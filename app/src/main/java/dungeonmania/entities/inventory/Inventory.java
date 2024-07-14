@@ -89,15 +89,4 @@ public class Inventory {
         return items.stream().filter(i -> i instanceof BattleItem && ((BattleItem) i).isWeapon())
                 .map(BattleItem.class::cast).findFirst().orElse(null);
     }
-
-    // public boolean hasWeapon() {
-    //     return getFirst(Sword.class) != null || getFirst(Bow.class) != null;
-    // }
-
-    // public BattleItem getWeapon() {
-    //     BattleItem weapon = getFirst(Sword.class);
-    //     if (weapon == null)
-    //         return getFirst(Bow.class);
-    //     return weapon;
-    // }
 }

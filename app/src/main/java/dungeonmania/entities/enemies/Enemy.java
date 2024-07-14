@@ -2,6 +2,7 @@ package dungeonmania.entities.enemies;
 
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
+import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
@@ -14,8 +15,9 @@ public abstract class Enemy extends Entity implements Battleable {
 
     public Enemy(Position position, double health, double attack) {
         super(position.asLayer(Entity.CHARACTER_LAYER));
-        battleStatistics = new BattleStatistics(health, attack, 0, BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
-                BattleStatistics.DEFAULT_ENEMY_DAMAGE_REDUCER);
+        battleStatistics = new BattleStatisticsBuilder().setHealth(health).setAttack(attack)
+                .setMagnifier(BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER)
+                .setReducer(BattleStatistics.DEFAULT_ENEMY_DAMAGE_REDUCER).build();
     }
 
     @Override
@@ -50,4 +52,15 @@ public abstract class Enemy extends Entity implements Battleable {
     }
 
     public abstract MovementStrategy getMovementStrategy(Player player);
+
+    @Override
+    public double getHealth() {
+        return battleStatistics.getHealth();
+    }
+
+    @Override
+    public void setHealth(double health) {
+        battleStatistics.setHealth(health);
+    }
+
 }
