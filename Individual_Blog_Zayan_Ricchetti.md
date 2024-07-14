@@ -4,7 +4,7 @@
 
 ## Week 6
 
-- List the tasks you completed this week here
+- Refactored Task 1.e.
 
 ## Week 7
 
