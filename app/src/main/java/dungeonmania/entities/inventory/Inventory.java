@@ -9,11 +9,7 @@ import dungeonmania.entities.Entity;
 import dungeonmania.entities.EntityFactory;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.buildables.Bow;
-import dungeonmania.entities.collectables.Arrow;
-import dungeonmania.entities.collectables.Key;
-import dungeonmania.entities.collectables.Sword;
-import dungeonmania.entities.collectables.Treasure;
-import dungeonmania.entities.collectables.Wood;
+import dungeonmania.entities.buildables.Shield;
 
 public class Inventory {
     private List<InventoryItem> items = new ArrayList<>();
@@ -28,49 +24,21 @@ public class Inventory {
     }
 
     public List<String> getBuildables() {
-
-        int wood = count(Wood.class);
-        int arrows = count(Arrow.class);
-        int treasure = count(Treasure.class);
-        int keys = count(Key.class);
         List<String> result = new ArrayList<>();
-
-        if (wood >= 1 && arrows >= 3) {
+        if (Bow.isBuildable(this)) {
             result.add("bow");
         }
-        if (wood >= 2 && (treasure >= 1 || keys >= 1)) {
+        if (Shield.isBuildable(this)) {
             result.add("shield");
         }
         return result;
     }
 
-    public InventoryItem checkBuildCriteria(Player p, boolean remove, boolean forceShield, EntityFactory factory) {
-
-        List<Wood> wood = getEntities(Wood.class);
-        List<Arrow> arrows = getEntities(Arrow.class);
-        List<Treasure> treasure = getEntities(Treasure.class);
-        List<Key> keys = getEntities(Key.class);
-
-        if (wood.size() >= 1 && arrows.size() >= 3 && !forceShield) {
-            if (remove) {
-                items.remove(wood.get(0));
-                items.remove(arrows.get(0));
-                items.remove(arrows.get(1));
-                items.remove(arrows.get(2));
-            }
-            return factory.buildBow();
-
-        } else if (wood.size() >= 2 && (treasure.size() >= 1 || keys.size() >= 1)) {
-            if (remove) {
-                items.remove(wood.get(0));
-                items.remove(wood.get(1));
-                if (treasure.size() >= 1) {
-                    items.remove(treasure.get(0));
-                } else {
-                    items.remove(keys.get(0));
-                }
-            }
-            return factory.buildShield();
+    public InventoryItem checkBuildCriteria(Player p, String entity, EntityFactory factory) {
+        if (entity.equals("bow") && Bow.isBuildable(this)) {
+            return Bow.build(factory, this);
+        } else if (entity.equals("shield") && Shield.isBuildable(this)) {
+            return Shield.build(factory, this);
         }
         return null;
     }
@@ -80,6 +48,14 @@ public class Inventory {
             if (itemType.isInstance(item))
                 return itemType.cast(item);
         return null;
+    }
+
+    public <T extends InventoryItem> void removeFirst(Class<T> itemType) {
+        for (InventoryItem item : items)
+            if (itemType.isInstance(item)) {
+                items.remove(item);
+                return;
+            }
     }
 
     public <T extends InventoryItem> int count(Class<T> itemType) {
@@ -105,19 +81,23 @@ public class Inventory {
         return items.stream().filter(clz::isInstance).map(clz::cast).collect(Collectors.toList());
     }
 
-    // public boolean hasWeapon() {
-    //     return getFirst(Sword.class) != null || getFirst(Bow.class) != null;
-    // }
-
     public boolean hasWeapon() {
         return items.stream().anyMatch(i -> i instanceof BattleItem && ((BattleItem) i).isWeapon());
     }
 
     public BattleItem getWeapon() {
-        BattleItem weapon = getFirst(Sword.class);
-        if (weapon == null)
-            return getFirst(Bow.class);
-        return weapon;
+        return items.stream().filter(i -> i instanceof BattleItem && ((BattleItem) i).isWeapon())
+                .map(BattleItem.class::cast).findFirst().orElse(null);
     }
 
+    // public boolean hasWeapon() {
+    //     return getFirst(Sword.class) != null || getFirst(Bow.class) != null;
+    // }
+
+    // public BattleItem getWeapon() {
+    //     BattleItem weapon = getFirst(Sword.class);
+    //     if (weapon == null)
+    //         return getFirst(Bow.class);
+    //     return weapon;
+    // }
 }

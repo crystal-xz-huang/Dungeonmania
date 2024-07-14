@@ -54,6 +54,10 @@ public class Bomb extends InventoryItem {
         translate(Position.calculatePositionBetween(getPosition(), p));
         map.addEntity(this);
         this.state = State.PLACED;
+        subscribeToAdjacentSwitches(map);
+    }
+
+    private void subscribeToAdjacentSwitches(GameMap map) {
         List<Position> adjPosList = getPosition().getCardinallyAdjacentPositions();
         adjPosList.stream().forEach(node -> {
             List<Entity> entities = map.getEntities(node).stream().filter(e -> (e instanceof Switch))
@@ -66,6 +70,10 @@ public class Bomb extends InventoryItem {
     public void explode(GameMap map) {
         int x = getPosition().getX();
         int y = getPosition().getY();
+        destroyEntitiesInRadius(map, x, y);
+    }
+
+    private void destroyEntitiesInRadius(GameMap map, int x, int y) {
         for (int i = x - radius; i <= x + radius; i++) {
             for (int j = y - radius; j <= y + radius; j++) {
                 List<Entity> entities = map.getEntities(new Position(i, j));
@@ -74,9 +82,5 @@ public class Bomb extends InventoryItem {
                     map.destroyEntity(e);
             }
         }
-    }
-
-    public State getState() {
-        return state;
     }
 }
