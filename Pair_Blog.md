@@ -247,7 +247,7 @@ Refactored the `pickUp` method to handle only the addition of the item to the in
 
 ### e) Open-Closed Goals
 
-[Merge Request 1](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/9)
+[Merge Request 1](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/14)
 
 > i. Do you think the design is of good quality here? Do you think it complies with the open-closed principle? Do you think the design should be changed?
 
