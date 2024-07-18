@@ -21,6 +21,6 @@ public class ExitGoal implements Goal {
 
     @Override
     public String toString(Game game) {
-        return ":exit";
+        return (this.achieved(game) ? "" : ":exit");
     }
 }

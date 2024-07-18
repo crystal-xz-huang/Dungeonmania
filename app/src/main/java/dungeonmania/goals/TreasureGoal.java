@@ -16,6 +16,6 @@ public class TreasureGoal implements Goal {
 
     @Override
     public String toString(Game game) {
-        return ":treasure";
+        return (this.achieved(game) ? "" : ":treasure");
     }
 }

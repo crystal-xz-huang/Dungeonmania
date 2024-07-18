@@ -11,6 +11,6 @@ public class BoulderGoal implements Goal {
 
     @Override
     public String toString(Game game) {
-        return ":boulders";
+        return (this.achieved(game) ? "" : ":boulders");
     }
 }
