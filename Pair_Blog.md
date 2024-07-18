@@ -381,6 +381,10 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 - Refactored `BattleItem` to remove violations of LOD:
     - Added new method in `Game` class to remove inventory items so that `use(Game game)` does not use method chaining to get the player and then remove the item from the player's inventory
 
+[Merge Request 6](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/12)
+
+- Changed the line `List<Exit> es = game.getMap().getEntities(Exit.class);` to `List<Exit> es = game.getEntities(Exit.class);`. First line violates the Law of Demeter since `getEntities()` relies on `getMap()`. Changed it to use the `getEntities()` function from the `Game` class instead of the `GameMap` class.
+
 ## Task 2) Evolution of Requirements 👽
 
 ### a) Microevolution - Enemy Goal
