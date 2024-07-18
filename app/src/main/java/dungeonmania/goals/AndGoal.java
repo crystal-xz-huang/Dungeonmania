@@ -2,7 +2,7 @@ package dungeonmania.goals;
 
 import dungeonmania.Game;
 
-public class AndGoal extends Goal {
+public class AndGoal implements Goal {
     private Goal goal1;
     private Goal goal2;
 
@@ -13,15 +13,11 @@ public class AndGoal extends Goal {
 
     @Override
     public boolean achieved(Game game) {
-        if (super.achieved(game))
-            return false;
         return goal1.achieved(game) && goal2.achieved(game);
     }
 
     @Override
     public String toString(Game game) {
-        if (this.achieved(game))
-            return "";
         return "(" + goal1.toString(game) + " AND " + goal2.toString(game) + ")";
     }
 }

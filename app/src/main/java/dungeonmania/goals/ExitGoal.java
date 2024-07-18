@@ -8,11 +8,9 @@ import dungeonmania.entities.Exit;
 import dungeonmania.entities.Player;
 import dungeonmania.util.Position;
 
-public class ExitGoal extends Goal {
+public class ExitGoal implements Goal {
     @Override
     public boolean achieved(Game game) {
-        if (super.achieved(game))
-            return false;
         Player character = game.getPlayer();
         Position pos = character.getPosition();
         List<Exit> es = game.getEntities(Exit.class);
@@ -23,8 +21,6 @@ public class ExitGoal extends Goal {
 
     @Override
     public String toString(Game game) {
-        if (this.achieved(game))
-            return "";
         return ":exit";
     }
 }

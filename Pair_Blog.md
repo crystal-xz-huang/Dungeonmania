@@ -258,8 +258,11 @@ The open-closed principle states that a class should be open for extension but c
 1. **Switch Statement**: The `achieved` method in the `Goal` class uses a switch statement based on the type of goal. Every time a new goal type is added, or the behaviour for a goal type changes, this method needs to be modified, which violates the OCP.
 2. **Goal Type Logic**: Currently, the behaviour of achieving a goal is hardcoded and locked into a concrete implementation in the Goal class. This means that adding or modifying goal types requires changing the existing Goal class, which is against the OCP.
 
-To better adhere to the open-closed principle, the design should be changed to use inheritance and polymorphism.  Each goal type should be represented by its own class, inheriting from an abstract Goal class. This way, new goal types can be added by creating new subclasses without modifying existing code.
+To better adhere to the open-closed principle, the design should be changed to use **Composite Pattern**. We create a base component interface `Goal` which defines methods that all goals must implement. Each goal type should be represented by its own class, implementing the base component interface.
 
+The AND and OR goals are the composite objects, which contain 2 subgoals whereas the other goals are leaf objects. This way, we can correctly compose the goal objects to represent the part-whole hierarchies.
+
+This way, new goal types can be added by creating new subclasses without modifying existing code, and we can perform the same operations on both individual goals and compositions (AND, OR goals) unniformly.
 
 > ii. If you think the design is sufficient as it is, justify your decision. If you think the answer is no, pick a suitable Design Pattern that would improve the quality of the code and refactor the code accordingly.
 
