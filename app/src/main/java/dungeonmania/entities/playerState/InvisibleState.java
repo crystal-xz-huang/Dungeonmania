@@ -1,7 +1,7 @@
 package dungeonmania.entities.playerState;
 
 import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
+import dungeonmania.battles.BattleStatisticsDirector;
 import dungeonmania.entities.Player;
 
 public class InvisibleState extends PlayerState {
@@ -10,7 +10,7 @@ public class InvisibleState extends PlayerState {
     }
 
     @Override
-    public BattleStatistics getBattleStatistics() {
-        return new BattleStatisticsBuilder().setEnabled(false).build();
+    public BattleStatistics getStateStatistics() {
+        return new BattleStatisticsDirector().constructInvisibilityStatistics();
     }
 }

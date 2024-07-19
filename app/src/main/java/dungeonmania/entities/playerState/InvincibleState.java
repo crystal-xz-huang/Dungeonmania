@@ -1,7 +1,7 @@
 package dungeonmania.entities.playerState;
 
 import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
+import dungeonmania.battles.BattleStatisticsDirector;
 import dungeonmania.entities.Player;
 
 public class InvincibleState extends PlayerState {
@@ -10,7 +10,7 @@ public class InvincibleState extends PlayerState {
     }
 
     @Override
-    public BattleStatistics getBattleStatistics() {
-        return new BattleStatisticsBuilder().setInvincible(true).build();
+    public BattleStatistics getStateStatistics() {
+        return new BattleStatisticsDirector().constructInvincibilityStatistics();
     }
 }
