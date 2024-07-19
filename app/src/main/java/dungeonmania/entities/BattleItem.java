@@ -10,10 +10,12 @@ import dungeonmania.util.Position;
  */
 public abstract class BattleItem extends InventoryItem {
     private int durability;
+    private BattleStatistics buff;
 
-    public BattleItem(Position position, int durability) {
+    public BattleItem(Position position, int durability, BattleStatistics buff) {
         super(position);
         this.durability = durability;
+        this.buff = buff;
     }
 
     @Override
@@ -25,11 +27,12 @@ public abstract class BattleItem extends InventoryItem {
     }
 
     public BattleStatistics applyBuff(BattleStatistics origin) {
-        return BattleStatistics.applyBuff(origin, getBattleStatistics());
+        return BattleStatistics.applyBuff(origin, buff);
     }
 
     public abstract boolean isWeapon();
 
-    public abstract BattleStatistics getBattleStatistics();
-
+    public BattleStatistics getBuff() {
+        return buff;
+    }
 }

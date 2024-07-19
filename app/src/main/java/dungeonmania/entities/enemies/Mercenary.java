@@ -1,8 +1,7 @@
 package dungeonmania.entities.enemies;
 
 import dungeonmania.Game;
-import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
+import dungeonmania.battles.*;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Interactable;
 import dungeonmania.entities.Player;
@@ -23,18 +22,17 @@ public class Mercenary extends Enemy implements Interactable {
     private int bribeAmount = Mercenary.DEFAULT_BRIBE_AMOUNT;
     private int bribeRadius = Mercenary.DEFAULT_BRIBE_RADIUS;
 
-    private double allyAttack;
-    private double allyDefence;
+    private BattleStatistics allyStats;
+
     private boolean allied = false;
     private boolean isAdjacentToPlayer = false;
 
-    public Mercenary(Position position, double health, double attack, int bribeAmount, int bribeRadius,
-            double allyAttack, double allyDefence) {
-        super(position, health, attack);
+    public Mercenary(Position position, BattleStatistics stats, int bribeAmount, int bribeRadius,
+            BattleStatistics allyStats) {
+        super(position, stats);
         this.bribeAmount = bribeAmount;
         this.bribeRadius = bribeRadius;
-        this.allyAttack = allyAttack;
-        this.allyDefence = allyDefence;
+        this.allyStats = allyStats;
     }
 
     public boolean isAllied() {
@@ -105,6 +103,6 @@ public class Mercenary extends Enemy implements Interactable {
     public BattleStatistics getBattleStatistics() {
         if (!allied)
             return super.getBattleStatistics();
-        return new BattleStatisticsBuilder().setAttack(allyAttack).setDefence(allyDefence).build();
+        return allyStats;
     }
 }

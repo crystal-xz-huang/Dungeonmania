@@ -1,5 +1,6 @@
 package dungeonmania.entities.enemies;
 
+import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.movement.MovementStrategy;
@@ -12,8 +13,8 @@ public class Spider extends Enemy {
     public static final double DEFAULT_HEALTH = 10;
     private MovementStrategy movementStrategy;
 
-    public Spider(Position position, double health, double attack) {
-        super(position.asLayer(Entity.DOOR_LAYER + 1), health, attack);
+    public Spider(Position position, BattleStatistics stats) {
+        super(position.asLayer(Entity.DOOR_LAYER + 1), stats);
         /**
          * Establish spider movement trajectory Spider moves as follows:
          *  8 1 2       10/12  1/9  2/8
