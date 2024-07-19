@@ -1,10 +1,10 @@
 package dungeonmania.entities;
 
 import dungeonmania.Game;
+import dungeonmania.battles.*;
 import dungeonmania.entities.buildables.Bow;
 import dungeonmania.entities.buildables.Shield;
 import dungeonmania.entities.collectables.*;
-import dungeonmania.entities.collectables.Sword;
 import dungeonmania.entities.enemies.*;
 import dungeonmania.map.GameMap;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
@@ -20,10 +20,12 @@ import org.json.JSONObject;
 
 public class EntityFactory {
     private JSONObject config;
+    private BattleStatisticsDirector director;
     private Random ranGen = new Random();
 
     public EntityFactory(JSONObject config) {
         this.config = config;
+        this.director = new BattleStatisticsDirector();
     }
 
     public Entity createEntity(JSONObject jsonEntity) {
@@ -80,19 +82,19 @@ public class EntityFactory {
     public Spider buildSpider(Position pos) {
         double spiderHealth = config.optDouble("spider_health", Spider.DEFAULT_HEALTH);
         double spiderAttack = config.optDouble("spider_attack", Spider.DEFAULT_ATTACK);
-        return new Spider(pos, spiderHealth, spiderAttack);
+        return new Spider(pos, director.constructEnemyStatistics(spiderHealth, spiderAttack));
     }
 
     public Player buildPlayer(Position pos) {
         double playerHealth = config.optDouble("player_health", Player.DEFAULT_HEALTH);
         double playerAttack = config.optDouble("player_attack", Player.DEFAULT_ATTACK);
-        return new Player(pos, playerHealth, playerAttack);
+        return new Player(pos, director.constructPlayerStatistics(playerHealth, playerAttack));
     }
 
     public ZombieToast buildZombieToast(Position pos) {
         double zombieHealth = config.optDouble("zombie_health", ZombieToast.DEFAULT_HEALTH);
         double zombieAttack = config.optDouble("zombie_attack", ZombieToast.DEFAULT_ATTACK);
-        return new ZombieToast(pos, zombieHealth, zombieAttack);
+        return new ZombieToast(pos, director.constructEnemyStatistics(zombieHealth, zombieAttack));
     }
 
     public ZombieToastSpawner buildZombieToastSpawner(Position pos) {
@@ -107,19 +109,19 @@ public class EntityFactory {
         double allyDefence = config.optDouble("ally_defence", Mercenary.DEFAULT_ATTACK);
         int mercenaryBribeAmount = config.optInt("bribe_amount", Mercenary.DEFAULT_BRIBE_AMOUNT);
         int mercenaryBribeRadius = config.optInt("bribe_radius", Mercenary.DEFAULT_BRIBE_RADIUS);
-        return new Mercenary(pos, mercenaryHealth, mercenaryAttack, mercenaryBribeAmount, mercenaryBribeRadius,
-                allyAttack, allyDefence);
+        return new Mercenary(pos, director.constructEnemyStatistics(mercenaryHealth, mercenaryAttack),
+                mercenaryBribeAmount, mercenaryBribeRadius, director.constructAllyStatistics(allyAttack, allyDefence));
     }
 
     public Bow buildBow() {
         int bowDurability = config.optInt("bow_durability");
-        return new Bow(bowDurability);
+        return new Bow(bowDurability, director.constructBowStatistics());
     }
 
     public Shield buildShield() {
         int shieldDurability = config.optInt("shield_durability");
         double shieldDefence = config.optInt("shield_defence");
-        return new Shield(shieldDurability, shieldDefence);
+        return new Shield(shieldDurability, director.constructShieldStatistics(shieldDefence));
     }
 
     private Entity constructEntity(JSONObject jsonEntity, JSONObject config) {
@@ -154,17 +156,18 @@ public class EntityFactory {
         case "invisibility_potion":
             int invisibilityPotionDuration = config.optInt("invisibility_potion_duration",
                     InvisibilityPotion.DEFAULT_DURATION);
-            return new InvisibilityPotion(pos, invisibilityPotionDuration);
+            return new InvisibilityPotion(pos, invisibilityPotionDuration, director.constructInvisibilityStatistics());
         case "invincibility_potion":
             int invincibilityPotionDuration = config.optInt("invincibility_potion_duration",
                     InvincibilityPotion.DEFAULT_DURATION);
-            return new InvincibilityPotion(pos, invincibilityPotionDuration);
+            return new InvincibilityPotion(pos, invincibilityPotionDuration,
+                    director.constructInvincibilityStatistics());
         case "portal":
             return new Portal(pos, ColorCodedType.valueOf(jsonEntity.getString("colour")));
         case "sword":
             double swordAttack = config.optDouble("sword_attack", Sword.DEFAULT_ATTACK);
             int swordDurability = config.optInt("sword_durability", Sword.DEFAULT_DURABILITY);
-            return new Sword(pos, swordAttack, swordDurability);
+            return new Sword(pos, swordDurability, director.constructSwordStatistics(swordAttack));
         case "spider":
             return buildSpider(pos);
         case "door":
