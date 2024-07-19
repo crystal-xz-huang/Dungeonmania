@@ -18,7 +18,7 @@
 
 ## Week 8
 
-- List the tasks you completed this week here
+- Modified Goal classes to implement the Composite Pattern
 
 ## Week 9
 

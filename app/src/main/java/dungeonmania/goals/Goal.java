@@ -2,10 +2,9 @@ package dungeonmania.goals;
 
 import dungeonmania.Game;
 
-public abstract class Goal {
-    public boolean achieved(Game game) {
-        return game.getPlayer() == null;
-    }
+// Component Interface
+public interface Goal {
+    public boolean achieved(Game game);
 
-    public abstract String toString(Game game);
+    public String toString(Game game);
 }
