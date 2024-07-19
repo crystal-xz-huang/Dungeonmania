@@ -3,13 +3,9 @@ package dungeonmania.entities;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.ArrayList;
-
-import java.util.stream.Collectors;
 
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.Treasure;
@@ -27,24 +23,20 @@ import dungeonmania.map.GameMap;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class Player extends Entity implements Battleable {
+public class Player extends Battleable {
     public static final double DEFAULT_ATTACK = 5.0;
     public static final double DEFAULT_HEALTH = 5.0;
-    private BattleStatistics battleStatistics;
     private Inventory inventory;
     private Queue<Potion> queue = new LinkedList<>();
     private Potion inEffective = null;
     private int nextTrigger = 0;
-    private PlayerState state;
-    private List<BattleItem> usedBattleItems = new ArrayList<>();
 
-    public Player(Position position, double health, double attack) {
-        super(position);
-        battleStatistics = new BattleStatisticsBuilder().setHealth(health).setAttack(attack)
-                .setMagnifier(BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER)
-                .setReducer(BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER).build();
-        inventory = new Inventory();
+    private PlayerState state;
+
+    public Player(Position position, BattleStatistics stats) {
+        super(position, stats);
         state = new BaseState(this);
+        inventory = new Inventory();
     }
 
     public int getCollectedTreasureCount() {
@@ -121,20 +113,16 @@ public class Player extends Entity implements Battleable {
     public void triggerNext(int currentTick) {
         if (queue.isEmpty()) {
             inEffective = null;
-            changeState(new BaseState(this));
+            state = new BaseState(this);
             return;
         }
         inEffective = queue.remove();
         if (inEffective instanceof InvincibilityPotion) {
-            changeState(new InvincibleState(this));
+            state = new InvincibleState(this);
         } else {
-            changeState(new InvisibleState(this));
+            state = new InvisibleState(this);
         }
         nextTrigger = currentTick + inEffective.getDuration();
-    }
-
-    public void changeState(PlayerState playerState) {
-        state = playerState;
     }
 
     public void use(Potion potion, int tick) {
@@ -155,62 +143,15 @@ public class Player extends Entity implements Battleable {
         inventory.remove(item);
     }
 
-    @Override
-    public BattleStatistics getBattleStatistics() {
-        return battleStatistics;
-    }
-
     public <T extends InventoryItem> int countEntityOfType(Class<T> itemType) {
         return inventory.count(itemType);
     }
 
-    @Override
-    public double getHealth() {
-        return battleStatistics.getHealth();
-    }
-
-    @Override
-    public void setHealth(double health) {
-        battleStatistics.setHealth(health);
-    }
-
     public BattleStatistics applyBuff(Game game) {
-        BattleStatistics buffedStatistics = applyPotionBuff(battleStatistics);
-        buffedStatistics = applyItemBuff(game, buffedStatistics);
-        buffedStatistics = applyAlliedMercenaryBuffs(game, buffedStatistics);
-        return buffedStatistics;
-    }
-
-    private BattleStatistics applyAlliedMercenaryBuffs(Game game, BattleStatistics origin) {
-        List<Mercenary> allies = game.getEntities(Mercenary.class).stream().filter(Mercenary::isAllied)
-                .collect(Collectors.toList());
-        for (Mercenary merc : allies) {
-            origin = BattleStatistics.applyBuff(origin, merc.getBattleStatistics());
-        }
-        return origin;
-    }
-
-    private BattleStatistics applyItemBuff(Game game, BattleStatistics origin) {
-        for (BattleItem item : inventory.getEntities(BattleItem.class)) {
-            origin = item.applyBuff(origin);
-            usedBattleItems.add(item);
-            item.use(game);
-        }
-        return origin;
-    }
-
-    private BattleStatistics applyPotionBuff(BattleStatistics origin) {
-        Potion effectivePotion = getEffectivePotion();
-        if (effectivePotion != null) {
-            origin = state.applyBuff(origin);
-        }
-        return origin;
+        return state.applyBuff(game);
     }
 
     public List<BattleItem> getUsedBattleItems() {
-        // return a copy of the used items
-        List<BattleItem> copy = new ArrayList<>(usedBattleItems);
-        usedBattleItems.clear();
-        return copy;
+        return state.getUsedBattleItems();
     }
 }

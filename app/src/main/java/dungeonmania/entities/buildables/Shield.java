@@ -1,7 +1,6 @@
 package dungeonmania.entities.buildables;
 
 import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.entities.BattleItem;
 import dungeonmania.entities.collectables.Wood;
 import dungeonmania.entities.collectables.Treasure;
@@ -10,16 +9,8 @@ import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.entities.EntityFactory;
 
 public class Shield extends BattleItem implements Buildable {
-    private double defence;
-
-    public Shield(int durability, double defence) {
-        super(null, durability);
-        this.defence = defence;
-    }
-
-    @Override
-    public BattleStatistics getBattleStatistics() {
-        return new BattleStatisticsBuilder().setDefence(defence).build();
+    public Shield(int durability, BattleStatistics buff) {
+        super(null, durability, buff);
     }
 
     @Override

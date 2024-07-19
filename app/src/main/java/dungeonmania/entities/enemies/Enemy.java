@@ -2,7 +2,6 @@ package dungeonmania.entities.enemies;
 
 import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
@@ -10,24 +9,14 @@ import dungeonmania.entities.movement.MovementStrategy;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
-public abstract class Enemy extends Entity implements Battleable {
-    private BattleStatistics battleStatistics;
-
-    public Enemy(Position position, double health, double attack) {
-        super(position.asLayer(Entity.CHARACTER_LAYER));
-        battleStatistics = new BattleStatisticsBuilder().setHealth(health).setAttack(attack)
-                .setMagnifier(BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER)
-                .setReducer(BattleStatistics.DEFAULT_ENEMY_DAMAGE_REDUCER).build();
+public abstract class Enemy extends Battleable {
+    public Enemy(Position position, BattleStatistics stats) {
+        super(position.asLayer(Entity.CHARACTER_LAYER), stats);
     }
 
     @Override
     public boolean canMoveOnto(GameMap map, Entity entity) {
         return entity instanceof Player;
-    }
-
-    @Override
-    public BattleStatistics getBattleStatistics() {
-        return battleStatistics;
     }
 
     @Override
@@ -52,15 +41,5 @@ public abstract class Enemy extends Entity implements Battleable {
     }
 
     public abstract MovementStrategy getMovementStrategy(Player player);
-
-    @Override
-    public double getHealth() {
-        return battleStatistics.getHealth();
-    }
-
-    @Override
-    public void setHealth(double health) {
-        battleStatistics.setHealth(health);
-    }
 
 }

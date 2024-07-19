@@ -1,7 +1,7 @@
 package dungeonmania.entities.playerState;
 
 import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
+import dungeonmania.battles.BattleStatisticsDirector;
 import dungeonmania.entities.Player;
 
 public class BaseState extends PlayerState {
@@ -10,7 +10,7 @@ public class BaseState extends PlayerState {
     }
 
     @Override
-    public BattleStatistics getBattleStatistics() {
-        return new BattleStatisticsBuilder().build();
+    public BattleStatistics getStateStatistics() {
+        return new BattleStatisticsDirector().constructBaseStatistics();
     }
 }

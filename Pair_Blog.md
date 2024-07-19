@@ -388,6 +388,15 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 
 - Changed the line `List<Exit> es = game.getMap().getEntities(Exit.class);` to `List<Exit> es = game.getEntities(Exit.class);`. First line violates the Law of Demeter since `getEntities()` relies on `getMap()`. Changed it to use the `getEntities()` function from the `Game` class instead of the `GameMap` class.
 
+
+[Merge Request 6](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/15)
+
+- Added a Director class to the BattleStatistics Builder Pattern design for code reuse and to encapsulate the `BattleStatistics` construction to one class (the `BattleStatisticsDirector` class)
+
+- Modified `BattleItem` and `Battleable` to accept a `BattleStatistics` parameter in replacement of the original BattleStatistics fields, and updated `EntityFactory` to construct and initialise the `BattleStatistics` objects during the Entity construction process.
+
+- Updated `PlayerState` to handle all BattleStatistics changes in battle, by extracting and moving `applyBuff(Game game)` from Player to the State classes, in order to reduce the length of the Player class and to align with SRP where the player delegates all state-related behaviour and changes to the state objects.
+
 ## Task 2) Evolution of Requirements 👽
 
 ### a) Microevolution - Enemy Goal

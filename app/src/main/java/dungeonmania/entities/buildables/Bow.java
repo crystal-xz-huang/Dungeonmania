@@ -1,7 +1,6 @@
 package dungeonmania.entities.buildables;
 
 import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.BattleStatisticsBuilder;
 import dungeonmania.entities.BattleItem;
 import dungeonmania.entities.collectables.Arrow;
 import dungeonmania.entities.collectables.Wood;
@@ -9,13 +8,10 @@ import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.entities.EntityFactory;
 
 public class Bow extends BattleItem implements Buildable {
-    public Bow(int durability) {
-        super(null, durability);
-    }
+    public static final double DEFAULT_ATTACK_SCALE_FACTOR = 2.0;
 
-    @Override
-    public BattleStatistics getBattleStatistics() {
-        return new BattleStatisticsBuilder().setMagnifier(2).build();
+    public Bow(int durability, BattleStatistics buff) {
+        super(null, durability, buff);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package dungeonmania.entities.enemies;
 
+import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.movement.*;
@@ -9,8 +10,8 @@ public class ZombieToast extends Enemy {
     public static final double DEFAULT_HEALTH = 5.0;
     public static final double DEFAULT_ATTACK = 6.0;
 
-    public ZombieToast(Position position, double health, double attack) {
-        super(position, health, attack);
+    public ZombieToast(Position position, BattleStatistics stats) {
+        super(position, stats);
     }
 
     @Override
