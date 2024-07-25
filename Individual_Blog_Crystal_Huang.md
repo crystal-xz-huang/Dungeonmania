@@ -19,6 +19,7 @@
 ## Week 8
 
 - Modified Goal classes to implement the Composite Pattern
+- Implemented Task 2d Sun Stone & More Buildables
 
 ## Week 9
 

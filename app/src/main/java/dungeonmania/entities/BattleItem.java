@@ -11,15 +11,25 @@ import dungeonmania.util.Position;
 public abstract class BattleItem extends InventoryItem {
     private int durability;
     private BattleStatistics buff;
+    private boolean durable;
+
+    public BattleItem(Position position, BattleStatistics buff) {
+        super(position);
+        this.buff = buff;
+        durable = true;
+    }
 
     public BattleItem(Position position, int durability, BattleStatistics buff) {
         super(position);
         this.durability = durability;
         this.buff = buff;
+        durable = false;
     }
 
-    @Override
     public void use(Game game) {
+        if (durable) {
+            return;
+        }
         durability--;
         if (durability <= 0) {
             game.remove(this);

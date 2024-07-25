@@ -5,20 +5,16 @@ import java.util.List;
 import java.util.Queue;
 
 import dungeonmania.Game;
-import dungeonmania.battles.BattleStatistics;
-import dungeonmania.battles.Battleable;
+import dungeonmania.battles.*;
+import dungeonmania.entities.buildables.Buildable;
 import dungeonmania.entities.collectables.Bomb;
+import dungeonmania.entities.collectables.Key;
+import dungeonmania.entities.collectables.SunStone;
 import dungeonmania.entities.collectables.Treasure;
-import dungeonmania.entities.collectables.potions.InvincibilityPotion;
-import dungeonmania.entities.collectables.potions.Potion;
-import dungeonmania.entities.enemies.Enemy;
-import dungeonmania.entities.enemies.Mercenary;
-import dungeonmania.entities.inventory.Inventory;
-import dungeonmania.entities.inventory.InventoryItem;
-import dungeonmania.entities.playerState.BaseState;
-import dungeonmania.entities.playerState.InvincibleState;
-import dungeonmania.entities.playerState.InvisibleState;
-import dungeonmania.entities.playerState.PlayerState;
+import dungeonmania.entities.collectables.potions.*;
+import dungeonmania.entities.enemies.*;
+import dungeonmania.entities.inventory.*;
+import dungeonmania.entities.playerState.*;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -40,19 +36,20 @@ public class Player extends Battleable {
     }
 
     public int getCollectedTreasureCount() {
-        return inventory.count(Treasure.class);
+        return inventory.count(Treasure.class) + inventory.count(SunStone.class);
     }
 
     public boolean hasWeapon() {
         return inventory.hasWeapon();
     }
 
+    // cannnot modify signature
     public List<String> getBuildables() {
         return inventory.getBuildables();
     }
 
-    public boolean build(String entity, EntityFactory factory) {
-        InventoryItem item = inventory.checkBuildCriteria(this, entity, factory);
+    public boolean build(String entity, EntityFactory factory, Game game) {
+        InventoryItem item = inventory.checkBuildCriteria(entity, factory);
         if (item == null)
             return false;
         return inventory.add(item);
@@ -65,11 +62,7 @@ public class Player extends Battleable {
 
     @Override
     public void onOverlap(GameMap map, Entity entity) {
-        if (entity instanceof Enemy) {
-            if (entity instanceof Mercenary) {
-                if (((Mercenary) entity).isAllied())
-                    return;
-            }
+        if (entity instanceof Enemy && !((Enemy) entity).isAllied()) {
             map.getGame().battle(this, (Enemy) entity);
         }
     }
@@ -79,12 +72,18 @@ public class Player extends Battleable {
         return true;
     }
 
+    public boolean hasKey(int number) {
+        Key key = inventory.getFirst(Key.class);
+        SunStone sunstone = inventory.getFirst(SunStone.class);
+        return (key != null && key.getnumber() == number) || sunstone != null;
+    }
+
     public Entity getEntity(String itemUsedId) {
         return inventory.getEntity(itemUsedId);
     }
 
     public boolean pickUp(Entity item) {
-        if (item instanceof InventoryItem) {
+        if (item instanceof InventoryItem && !(item instanceof Buildable)) {
             return inventory.add((InventoryItem) item);
         }
         return false;
@@ -98,10 +97,10 @@ public class Player extends Battleable {
         return inEffective;
     }
 
-    public <T extends InventoryItem> void use(Class<T> itemType) {
-        T item = inventory.getFirst(itemType);
-        if (item != null) {
-            inventory.remove(item);
+    // can only bribe merc with treasure but not sunstone
+    public void bribe(int bribeAmount) {
+        for (int i = 0; i < bribeAmount; i++) {
+            inventory.removeFirst(Treasure.class);
         }
     }
 
@@ -141,6 +140,14 @@ public class Player extends Battleable {
 
     public void remove(InventoryItem item) {
         inventory.remove(item);
+    }
+
+    public <T extends InventoryItem> T get(Class<T> itemType) {
+        return inventory.getFirst(itemType);
+    }
+
+    public <T extends InventoryItem> void remove(Class<T> itemType) {
+        inventory.removeFirst(itemType);
     }
 
     public <T extends InventoryItem> int countEntityOfType(Class<T> itemType) {

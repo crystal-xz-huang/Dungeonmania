@@ -7,8 +7,9 @@ import java.util.stream.Collectors;
 import dungeonmania.entities.BattleItem;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.EntityFactory;
-import dungeonmania.entities.Player;
 import dungeonmania.entities.buildables.Bow;
+import dungeonmania.entities.buildables.MidnightArmour;
+import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.buildables.Shield;
 
 public class Inventory {
@@ -31,14 +32,24 @@ public class Inventory {
         if (Shield.isBuildable(this)) {
             result.add("shield");
         }
+        if (Sceptre.isBuildable(this)) {
+            result.add("sceptre");
+        }
+        if (MidnightArmour.isBuildable(this)) {
+            result.add("midnight_armour");
+        }
         return result;
     }
 
-    public InventoryItem checkBuildCriteria(Player p, String entity, EntityFactory factory) {
+    public InventoryItem checkBuildCriteria(String entity, EntityFactory factory) {
         if (entity.equals("bow") && Bow.isBuildable(this)) {
             return Bow.build(factory, this);
         } else if (entity.equals("shield") && Shield.isBuildable(this)) {
             return Shield.build(factory, this);
+        } else if (entity.equals("sceptre") && Sceptre.isBuildable(this)) {
+            return Sceptre.build(factory, this);
+        } else if (entity.equals("midnight_armour") && MidnightArmour.isBuildable(this)) {
+            return MidnightArmour.build(factory, this);
         }
         return null;
     }
@@ -50,14 +61,6 @@ public class Inventory {
         return null;
     }
 
-    public <T extends InventoryItem> void removeFirst(Class<T> itemType) {
-        for (InventoryItem item : items)
-            if (itemType.isInstance(item)) {
-                items.remove(item);
-                return;
-            }
-    }
-
     public <T extends InventoryItem> int count(Class<T> itemType) {
         int count = 0;
         for (InventoryItem item : items)
@@ -66,9 +69,17 @@ public class Inventory {
         return count;
     }
 
+    public <T extends InventoryItem> void removeFirst(Class<T> itemType) {
+        for (InventoryItem item : items)
+            if (itemType.isInstance(item)) {
+                items.remove(item);
+                return;
+            }
+    }
+
     public Entity getEntity(String itemUsedId) {
         for (InventoryItem item : items)
-            if (((Entity) item).getId().equals(itemUsedId))
+            if (item.getId().equals(itemUsedId))
                 return (Entity) item;
         return null;
     }

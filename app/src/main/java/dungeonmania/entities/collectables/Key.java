@@ -14,5 +14,4 @@ public class Key extends InventoryItem {
     public int getnumber() {
         return number;
     }
-
 }

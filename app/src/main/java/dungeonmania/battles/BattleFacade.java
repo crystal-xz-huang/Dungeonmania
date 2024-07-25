@@ -27,7 +27,7 @@ public class BattleFacade {
         // 1. apply buff provided by the game and player's inventory
         BattleStatistics playerBattleStatistics = player.applyBuff(game);
 
-        // 2. Battle the two stats
+        // 2. Battle the two stats (multiple rounds until one of them dies)
         BattleStatistics enemyBattleStatistics = enemy.getBattleStatistics();
         if (!playerBattleStatistics.isEnabled() || !enemyBattleStatistics.isEnabled())
             return;
