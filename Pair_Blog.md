@@ -423,29 +423,115 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 
 [Any other notes]
 
-### Choice 1 (Insert choice)
+### Choice 1 (Sun Stone & More Buildables)
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/16)
 
 **Assumptions**
+*Sceptre*
+- Sceptre is removed from player's inventory after use
+- Mind control duration is > 0
+- On mercernary interaction with player, there is no precedece over which action the player takes (bribe or mindcontrol) to become allies with the mercenary
 
-[Any assumptions made]
+*Sunstone*
+- No precendence over whether key or sunstone is used to open a door
 
 **Design**
+To add the SunStone as a collectable entity, we need to:
+1. Create a new class that extends from `InventoryItem` (collectable by default)
+2. Update `constructEntity()` in `EntityFactory` to create a new sunstone with a position
+3. Update `constructEntity()` in `GraphNodeFactory` to include a sunstone case
 
-[Design]
+To add Sceptre and Midnight Armour as buildable entities, we need to:
+1. Create new classes that extend from `Buildable` (battle item and inventory item by default)
+2. Create new methods `buildSceptre()` and `buildMidnightArmour()` in `EntityFactory`
+3. Add new builder methods to construct the battle statistics for these in `BattleStatisticsDirector`
+
+For the Midnight Armour, it has the constrain that it can only be built if there are no zombies currently in the dungeon. Therefore, we need to update `Game.build()` to throw an `InvalidActionException` if there are zombies currently in the dungeon for midnight_armour in addition to the check for whether the player has sufficient items to craft the buildable.
+
+SunStone has several functionalities. To implement each one, we need to do the following:
+1. Can be used to open doors (but retained after use)
+    - Modify `hasKey()` in `Door` to return true if player has a key or sunstone
+2. Interchangeably with treasure or keys for crafting (but retained after use)
+    - Modify `isBuildable()` in `Shield` to check if inventory has 2 wood + (1 treasure OR 1 key OR 1 sunstone)
+    - Modify `isBuildable()` in `Sceptre` to check if inventory has (1 wood OR 2 arrows) + (1 key OR 1 treasure OR 1 sunstone) + (1 sun stone)
+3. Counts towards treasure goal
+    - Modify `getCollectedTreasureCount()` in `Player` to also count sunstones
+
+When a player has a Sceptre, it can be used to mindcontrol a Mercernary to become allies.
+This changes the interaction between players and mercenaries.
+To implement the Sceptre's mind control effect on a Mercernary, we need to:
+1. Check if a player has a sceptre to mind control the mercernary in `Mercernary.isInteractable()`
+1. Track the duration of the mind control effect in `Mercernary` on interaction in `Mercernary.interact()`
+2. Apply the mind control effect to the `Mercernary` in `Mercernary.interact()` by removing the sceptre from player and setting allied to true
+3. Remove the mind control effect after the duration has expired on the enemy's turn.
+
+We can use the Observer Design Pattern where the `Game` (subject) updates the `Mercernary` (observer) on every tick by calling notifyObservers (which calls the observers update method). Therefore, we add the interfaces Subject and Observers with the required methods, and have `Game implements Subject` annd `Mercernary implements Observer`.
+
+When the Mercernary interacts with a player and the player uses mindcontrol, we subscribe the Mercerny to the Game. Then when the game state changes in `tick()`, we `notifyObservers()` to update the mind control duration.
 
 **Changes after review**
-
-[Design review/Changes made]
+- Added to `sun_stone`, `sceptre` and `midnight_armour` entities in `src/resources/skins/default.json)` and background music
+- To avoid `ConcurrentModificationException` when removing a Mercenary from the observer list during an iteration, used an iterator to safely remove elements while iterating over the list.
+- Set `isAllied()` to return false in `Enemy` base class
 
 **Test list**
+Midnight Armour
+- Test Crafting
+    - Success: no zombies currently in the dungeon + (1 sword + 1 sun stone)
+    - No Success: zombies currently in the dungeon + (1 sword + 1 sun stone)
+- Test Battle
+    - Gives player attack bonus and defence bonus
+    - Buff bonuses lasts forever in multiple battle rounds
+- Test Durability
+    - Lasts forever after x amount of battles
 
-[Test List]
+Sceptre
+- Test Crafting
+    - 1 wood + 1 key + 1 sunstone
+    - 1 wood + 1 treasure + 1 sunstone
+    - 1 wood + 1 sunstone + 1 sunstone (only 1 sunstone consumed)
+    - 2 arrows + 1 key + 1 sunstone
+    - 2 arrows + 1 treasure + 1 sunstone
+    - 2 arrows + 1 sunstone + 1 sunstone (only 1 sunstone consumed)
+- Test Mind Control Interaction
+    - Mercernary is allied when Player has a sceptre and no treasure
+    - Player does not attack mercernary
+    - Mind-controlled mercernary follows the player
+- Test Mind Control Duration
+    - Mind control effect ends on the next tick, and the Mercernary reverts to enemy
+- Test Not Creatable from DungeonMap
+
+
+Sun Stone
+- Test can be picked up by the player
+- Test can be used to open door but is not consumed
+- Test can also be used interchangeably with treasure or keys when building entities but is not consumed
+- Test count towards treasure goal
+- Test cannot be used to bribe mercernary
+- Test only consumed when listed as ingredient in crafting
+- Test created by DungeonMap
+
+| Item             | Case # | Ingredients                                  | Sunstone Consumed?                          |
+|------------------|--------|----------------------------------------------|---------------------------------------------|
+| Bow              | 1      | 1 wood + 3 arrows                            | N/A                                         |
+| Shield           | 1      | 2 wood + 1 treasure                          | No                                          |
+| Shield           | 2      | 2 wood + 1 key                               | No                                          |
+| Shield           | 3      | 2 wood + 1 sunstone                          | No                                          |
+| Sceptre          | 1      | 1 wood + 1 key + 1 sunstone                  | Yes                                         |
+| Sceptre          | 2      | 1 wood + 1 treasure + 1 sunstone             | Yes                                         |
+| Sceptre          | 3      | 1 wood + 1 sunstone + 1 sunstone             | Yes (one used as substitute, one consumed)  |
+| Sceptre          | 4      | 2 arrows + 1 key + 1 sunstone                | Yes                                         |
+| Sceptre          | 5      | 2 arrows + 1 treasure + 1 sunstone           | Yes                                         |
+| Sceptre          | 6      | 2 arrows + 1 sunstone + 1 sunstone           | Yes (one used as substitute, one consumed)  |
+| Midnight Armour  | 1      | 1 sword + 1 sunstone                         | Yes                                         |
+
 
 **Other notes**
 
-[Any other notes]
+- Building an item is a new tick
+- A single battle consists of multiple rounds until one participant is defeated (dead)
+- With default player and enemy (zombie) config values, player takes 5 rounds to defeat a zombie
 
 ### Choice 2 (Insert choice)
 

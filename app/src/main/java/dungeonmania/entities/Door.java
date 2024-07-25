@@ -4,7 +4,6 @@ import dungeonmania.map.GameMap;
 
 import dungeonmania.entities.collectables.Key;
 import dungeonmania.entities.enemies.Spider;
-import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.util.Position;
 
 public class Door extends Entity {
@@ -21,29 +20,18 @@ public class Door extends Entity {
         if (open || entity instanceof Spider) {
             return true;
         }
-        return (entity instanceof Player && hasKey((Player) entity));
+        return (entity instanceof Player && ((Player) entity).hasKey(number));
     }
 
     @Override
     public void onOverlap(GameMap map, Entity entity) {
         if (!(entity instanceof Player))
             return;
-
         Player player = (Player) entity;
-        Inventory inventory = player.getInventory();
-        Key key = inventory.getFirst(Key.class);
-
-        if (hasKey(player)) {
-            inventory.remove(key);
+        if (player.hasKey(number)) {
+            player.remove(Key.class);
             open();
         }
-    }
-
-    private boolean hasKey(Player player) {
-        Inventory inventory = player.getInventory();
-        Key key = inventory.getFirst(Key.class);
-
-        return (key != null && key.getnumber() == number);
     }
 
     public boolean isOpen() {
@@ -52,5 +40,9 @@ public class Door extends Entity {
 
     public void open() {
         open = true;
+    }
+
+    public int getnumber() {
+        return number;
     }
 }

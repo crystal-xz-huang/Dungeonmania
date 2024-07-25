@@ -1,8 +1,6 @@
 package dungeonmania;
 
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import dungeonmania.battles.BattleFacade;
@@ -13,13 +11,14 @@ import dungeonmania.entities.Player;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
+import dungeonmania.entities.enemies.ZombieToast;
 import dungeonmania.entities.inventory.InventoryItem;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.Goal;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Direction;
 
-public class Game {
+public class Game implements Subject {
     private String id;
     private String name;
     private Goal goals;
@@ -39,6 +38,7 @@ public class Game {
     private int tickCount = 0;
     private PriorityQueue<ComparableCallback> sub = new PriorityQueue<>();
     private PriorityQueue<ComparableCallback> addingSub = new PriorityQueue<>();
+    private List<Observer> observers = new ArrayList<>();
 
     public Game(String dungeonName) {
         this.name = dungeonName;
@@ -54,12 +54,26 @@ public class Game {
         register(() -> player.onTick(tickCount), PLAYER_MOVEMENT, "potionQueue");
     }
 
+    /**
+     * Ticks the game state when the player moves in the specified direction one square.
+     * The player's movement must be carried out first, then enemy movement.
+     * @param movementDirection
+     * @return
+     */
     public Game tick(Direction movementDirection) {
         registerOnce(() -> player.move(this.getMap(), movementDirection), PLAYER_MOVEMENT, "playerMoves");
         tick();
         return this;
     }
 
+    /**
+     * Ticks the game state when the player uses/attempts to use an item
+     * The player's action (attempts/using an item) must be carried out first, then enemy movement.
+     * As soon as the item is used, it is removed from the inventory.
+     * @param itemUsedId
+     * @return
+     * @throws InvalidActionException
+     */
     public Game tick(String itemUsedId) throws InvalidActionException {
         Entity item = player.getEntity(itemUsedId);
         if (item == null)
@@ -88,15 +102,26 @@ public class Game {
     }
 
     public Game build(String buildable) throws InvalidActionException {
-        List<String> buildables = player.getBuildables();
-        if (!buildables.contains(buildable)) {
+        if (!canBuild(buildable)) {
             throw new InvalidActionException(String.format("%s cannot be built", buildable));
         }
-        registerOnce(() -> player.build(buildable, entityFactory), PLAYER_MOVEMENT, "playerBuildsItem");
+        registerOnce(() -> player.build(buildable, entityFactory, this), PLAYER_MOVEMENT, "playerBuildsItem");
         tick();
         return this;
     }
 
+    // If the player does not have sufficient items to craft the buildable,
+    // or unbuildable for midnight_armour because there are zombies currently in the dungeon
+    private boolean canBuild(String buildable) {
+        List<String> buildables = player.getBuildables();
+        if (buildables.contains(buildable) && buildable.equals("midnight_armour")) {
+            return map.getEntities(ZombieToast.class).isEmpty();
+        }
+        return buildables.contains(buildable);
+    }
+
+    // Interacts with a mercenary (where the Player bribes or mind controls the mercenary)
+    // or a zombie spawner, where the Player destroys the spawner.
     public Game interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         Entity e = map.getEntity(entityId);
         if (e == null || !(e instanceof Interactable))
@@ -155,6 +180,8 @@ public class Game {
         addingSub = new PriorityQueue<>();
         sub = nextTickSub;
         tickCount++;
+        // notify observers - decrement mercenaries mind control duration
+        notifyObservers();
         return tickCount;
     }
 
@@ -212,5 +239,31 @@ public class Game {
 
     public void remove(InventoryItem item) {
         player.remove(item);
+    }
+
+    @Override
+    public void attach(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void detach(Observer o) {
+        observers.remove(o);
+    }
+
+    /**
+     * UPDATES:
+     * Decrement mind control duration for all mercenaries
+     */
+    @Override
+    public void notifyObservers() {
+        Iterator<Observer> iterator = observers.iterator();
+        while (iterator.hasNext()) {
+            Observer observer = iterator.next();
+            observer.update(this);
+            if (!observer.isValid()) {
+                iterator.remove();
+            }
+        }
     }
 }

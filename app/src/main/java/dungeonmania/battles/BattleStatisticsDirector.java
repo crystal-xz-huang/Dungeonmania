@@ -35,11 +35,19 @@ public class BattleStatisticsDirector {
         return new BattleStatisticsBuilder().setDefence(defence).build();
     }
 
+    public BattleStatistics constructMidnightArmourStatistics(double attack, double defence) {
+        return new BattleStatisticsBuilder().setAttack(attack).setDefence(defence).build();
+    }
+
     public BattleStatistics constructInvincibilityStatistics() {
         return new BattleStatisticsBuilder().setInvincible(true).build();
     }
 
     public BattleStatistics constructInvisibilityStatistics() {
         return new BattleStatisticsBuilder().setEnabled(false).build();
+    }
+
+    public BattleStatistics constructSceptreStatistics() {
+        return new BattleStatisticsBuilder().build();
     }
 }

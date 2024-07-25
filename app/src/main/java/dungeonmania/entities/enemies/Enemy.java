@@ -42,4 +42,8 @@ public abstract class Enemy extends Battleable {
 
     public abstract MovementStrategy getMovementStrategy(Player player);
 
+    public boolean isAllied() {
+        return false;
+    }
+
 }
