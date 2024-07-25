@@ -11,6 +11,8 @@ public class TreasureGoal implements Goal {
 
     @Override
     public boolean achieved(Game game) {
+        if (game == null)
+            return false;
         return game.getCollectedTreasureCount() >= target;
     }
 

@@ -13,6 +13,8 @@ public class OrGoal implements Goal {
 
     @Override
     public boolean achieved(Game game) {
+        if (game == null)
+            return false;
         return goal1.achieved(game) || goal2.achieved(game);
     }
 

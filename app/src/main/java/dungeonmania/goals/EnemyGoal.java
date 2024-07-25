@@ -12,6 +12,8 @@ public class EnemyGoal implements Goal {
 
     @Override
     public boolean achieved(Game game) {
+        if (game == null)
+            return false;
         int enemiesDefeated = game.getEnemiesDefeated();
         int spawnerCount = game.getEntities(ZombieToastSpawner.class).size();
         if (enemiesDefeated >= enemyGoal && spawnerCount == 0)

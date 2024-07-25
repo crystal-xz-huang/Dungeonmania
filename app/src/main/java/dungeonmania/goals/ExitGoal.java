@@ -11,6 +11,8 @@ import dungeonmania.util.Position;
 public class ExitGoal implements Goal {
     @Override
     public boolean achieved(Game game) {
+        if (game == null)
+            return false;
         Player character = game.getPlayer();
         Position pos = character.getPosition();
         List<Exit> es = game.getEntities(Exit.class);
