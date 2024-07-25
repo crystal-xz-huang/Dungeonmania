@@ -1,6 +1,7 @@
 package dungeonmania.mvp;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import org.junit.jupiter.api.DisplayName;
@@ -118,6 +119,52 @@ public class BasicGoalsTest {
         // collect treasure
         res = dmc.tick(Direction.RIGHT);
         assertEquals(3, TestUtils.getInventory(res, "treasure").size());
+
+        // assert goal met
+        assertEquals("", TestUtils.getGoals(res));
+    }
+
+    @Test
+    @Tag("13-5")
+    @DisplayName("Test achieving a basic enemy goal with spider")
+    public void enemySpider() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_basicGoalsTest_enemySpider", "c_basicGoalsTest_enemySpider");
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":enemies"));
+
+        // attack spider
+        res = dmc.tick(Direction.RIGHT);
+
+        // assert goal met
+        assertEquals("", TestUtils.getGoals(res));
+    }
+
+    @Test
+    @Tag("13-6")
+    @DisplayName("Test achieving a basic enemy goal with spawner")
+    public void enemySpawner() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_basicGoalsTest_enemySpawner", "c_basicGoalsTest_enemySpawner");
+        String spawnerId = TestUtils.getEntities(res, "zombie_toast_spawner").get(0).getId();
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":enemies"));
+
+        // collect sword
+        dmc.tick(Direction.DOWN);
+
+        // go under spawner
+        dmc.tick(Direction.RIGHT);
+
+        // destroy spawner
+        res = assertDoesNotThrow(() -> dmc.interact(spawnerId));
+
+        // ensure that there are no spawners
+        assertEquals(0, TestUtils.countType(res, "zombie_toast_spawner"));
 
         // assert goal met
         assertEquals("", TestUtils.getGoals(res));

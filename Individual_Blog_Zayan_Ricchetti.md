@@ -12,8 +12,9 @@
 
 ## Week 8
 
-- Changed ExitGoal.java
+- Refactored ExitGoal.java
+- Initial dsesign for Enemy Goal
 
 ## Week 9
 
-- List the tasks you completed this week here
+- Completed Enemy Goal Task

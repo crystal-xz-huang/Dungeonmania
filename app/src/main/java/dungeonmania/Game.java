@@ -27,6 +27,7 @@ public class Game implements Subject {
     private BattleFacade battleFacade;
     private EntityFactory entityFactory;
     private boolean isInTick = false;
+    private int enemiesDefeated = 0;
     public static final int PLAYER_MOVEMENT = 0;
     public static final int PLAYER_MOVEMENT_CALLBACK = 1;
     public static final int AI_MOVEMENT = 2;
@@ -98,6 +99,7 @@ public class Game implements Subject {
         }
         if (enemy.getHealth() <= 0) {
             map.destroyEntity(enemy);
+            enemyDefeated();
         }
     }
 
@@ -239,6 +241,14 @@ public class Game implements Subject {
 
     public void remove(InventoryItem item) {
         player.remove(item);
+    }
+
+    public void enemyDefeated() {
+        enemiesDefeated++;
+    }
+
+    public int getEnemiesDefeated() {
+        return enemiesDefeated;
     }
 
     @Override

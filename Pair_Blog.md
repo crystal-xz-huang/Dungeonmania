@@ -405,19 +405,52 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 
 **Assumptions**
 
-[Any assumptions made]
+- The user inputs a positive integer
+- User doesn't input a value higher than amount of initial enemies
 
 **Design**
 
-[Design]
+To implement this goal, we would create a new class `EnemyGoal` which extends `Goal`. 
+
+Then we'd have to implement the `achieved(Game game)` function. This would have to check if the player has killed the required amount of enemies and that there are no more spawners left.
+
+To check if the required amount of enemies have been defeated, first we could add a variable `int enemiesDefeated` to the `Player` class. A function `enemyDefeated()` that increments the variable could be added and called from `Game` in `battle(Player player, Enemy enemy)` for the successful case. Then the function `getEnemiesDefeated()` would be called in `EnemyGoal` and then be compared to the amount of enemies required to be defeated.
+
+For the spawners, we can get the number of `ZombieToastSpawner` entities left using `getEntities(Class<T> clz)` in the `Game` class. Then, we get the size of this list and check if it is 0.
+
+If both of these comparisons are true, the `achieved(Game game)` function would return true.
 
 **Changes after review**
 
-[Design review/Changes made]
+So I would just modify the blog post design part to this:
+
+To implement this goal, we would create a new class `EnemyGoal` which extends `Goal`. 
+
+Then we'd have to implement the `achieved(Game game)` function. This would have to check if the player has killed the required amount of enemies and that there are no more spawners left.
+
+To check if the required target of enemies has been defeated, we first add a new field `int enemiesDefeated` with a getter method `int getEnemiesDefeated()`  to the `Game` class. When a battle is initiated with `battle(Player player, Enemy enemy)`, we update the logic to increment `enemiesDefeated` after the enemy is destroyed for the successful case. Then `getEnemiesDefeated()` would be called in `EnemyGoal` and to check if the target is reached. 
+
+For the spawners, we can get the number of `ZombieToastSpawner` entities left using `getEntities(Class<T> clz)` in the `Game` class. Then, we get the size of this list and check if it is 0.
+
+If both of these comparisons are true, the `achieved(Game game)` function would return true.
+
+```java
+    public boolean achieved(Game game) {
+        return (game.getEnemiesDefeated() >= target) && (game.getEntities(ZombieToastSpawner.class).size() == 0);
+    }
+```
 
 **Test list**
 
-[Test List]
+Test success if:
+- Required enemies are destroyed and there are no spawners on the map to destroy
+- All spawners are destroyed and there are no enemies to destroy
+- Required enemies are destroyed and there all spawners are destroyed
+
+Test fail if:
+- All spawners are destroyed but required enemies haven't been destroyed
+- Required enemies are destroyed but not all spawners are destroyed
+
 
 **Other notes**
 
