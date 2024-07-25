@@ -1,6 +1,7 @@
 package dungeonmania.mvp;
 
 import dungeonmania.DungeonManiaController;
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import org.junit.jupiter.api.DisplayName;
@@ -162,5 +163,93 @@ public class ComplexGoalsTest {
         // assert boulder goal unmet
         assertTrue(TestUtils.getGoals(res).contains(":exit"));
         assertTrue(TestUtils.getGoals(res).contains(":boulders"));
+    }
+
+    @Test
+    @Tag("14-6")
+    @DisplayName("Testing an enemy goal is achieved when both spawners and required enemies are destroyed")
+    public void enemiesAndSpawnersDestroyed() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_complexGoalsTest_enemies", "c_complexGoalsTest_enemies");
+        String spawnerId = TestUtils.getEntities(res, "zombie_toast_spawner").get(0).getId();
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":enemies"));
+
+        // attack spider
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+
+        // collect sword
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.DOWN);
+
+        //destroy spawner
+        res = assertDoesNotThrow(() -> dmc.interact(spawnerId));
+
+        //ensure that there are no enemies
+        assertEquals(0, TestUtils.countType(res, "spider"));
+        assertEquals(0, TestUtils.countType(res, "zombie_toast_spawner"));
+
+        // assert goal met
+        assertEquals("", TestUtils.getGoals(res));
+
+    }
+
+    @Test
+    @Tag("14-7")
+    @DisplayName("Testing an enemy goal is not achieved if the required enemies are not destroyed")
+    public void enemiesNotDestroyed() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_complexGoalsTest_enemies", "c_complexGoalsTest_enemies");
+        String spawnerId = TestUtils.getEntities(res, "zombie_toast_spawner").get(0).getId();
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":enemies"));
+
+        // collect sword
+        res = dmc.tick(Direction.DOWN);
+
+        //destroy spawner
+        res = assertDoesNotThrow(() -> dmc.interact(spawnerId));
+
+        //ensure that there are no spawners
+        assertEquals(0, TestUtils.countType(res, "zombie_toast_spawner"));
+
+        //ensure that there is an enemy
+        assertEquals(1, TestUtils.countType(res, "spider"));
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":enemies"));
+
+    }
+
+    @Test
+    @Tag("14-8")
+    @DisplayName("Testing an enemy goal is not achieved if all spawners are not destroyed")
+    public void spawnersNotDestroyed() throws IllegalArgumentException, InvalidActionException {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_complexGoalsTest_enemies", "c_complexGoalsTest_enemies");
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":enemies"));
+
+        // attack spider
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+
+        //ensure that there are no enemies
+        assertEquals(0, TestUtils.countType(res, "spider"));
+
+        // assert goal not met
+        assertEquals(":enemies", TestUtils.getGoals(res));
+
     }
 }
