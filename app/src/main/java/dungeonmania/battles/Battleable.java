@@ -6,14 +6,6 @@ import dungeonmania.util.Position;
 /**
  * Entities implement this interface can do battles
  */
-// public interface Battleable {
-//     public BattleStatistics getBattleStatistics();
-
-//     public double getHealth();
-
-//     public void setHealth(double health);
-// }
-
 public abstract class Battleable extends Entity {
     private BattleStatistics battleStatistics;
 
