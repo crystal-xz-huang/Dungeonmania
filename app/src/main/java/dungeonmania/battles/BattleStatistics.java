@@ -2,6 +2,7 @@ package dungeonmania.battles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class BattleStatistics {
     public static final double DEFAULT_DAMAGE_MAGNIFIER = 1.0;
@@ -15,9 +16,11 @@ public class BattleStatistics {
     private double reducer;
     private boolean invincible;
     private boolean enabled;
+    private double healthIncreaseRate;
+    private double healthIncreaseAmount;
 
     public BattleStatistics(double health, double attack, double defence, double attackMagnifier, double damageReducer,
-            boolean isInvincible, boolean isEnabled) {
+            boolean isInvincible, boolean isEnabled, double healthIncreaseRate, double healthIncreaseAmount) {
         this.health = health;
         this.attack = attack;
         this.defence = defence;
@@ -25,6 +28,8 @@ public class BattleStatistics {
         this.reducer = damageReducer;
         this.invincible = isInvincible;
         this.enabled = isEnabled;
+        this.healthIncreaseRate = healthIncreaseRate;
+        this.healthIncreaseAmount = healthIncreaseAmount;
     }
 
     public static List<BattleRound> battle(BattleStatistics self, BattleStatistics target) {
@@ -39,19 +44,36 @@ public class BattleStatistics {
         }
 
         while (self.getHealth() > 0 && target.getHealth() > 0) {
+            // player
             double damageOnSelf = target.getMagnifier() * (target.getAttack() - self.getDefence()) / self.getReducer();
-            double damageOnTarget = self.getMagnifier() * (self.getAttack() - target.getDefence())
-                    / target.getReducer();
             self.setHealth(self.getHealth() - damageOnSelf);
-            target.setHealth(target.getHealth() - damageOnTarget);
-            rounds.add(new BattleRound(-damageOnSelf, -damageOnTarget));
+
+            // enemy
+            if (target.isHeal()) {
+                target.setHealth(target.getHealth() + target.getHealthIncreaseAmount());
+                rounds.add(new BattleRound(-damageOnSelf, target.getHealthIncreaseAmount()));
+            } else {
+                double damageOnTarget = self.getMagnifier() * (self.getAttack() - target.getDefence())
+                        / target.getReducer();
+                target.setHealth(target.getHealth() - damageOnTarget);
+                rounds.add(new BattleRound(-damageOnSelf, -damageOnTarget));
+            }
         }
         return rounds;
     }
 
+    public boolean isHeal() {
+        if (healthIncreaseRate >= 0 && healthIncreaseRate <= 1) {
+            Random rand = new Random();
+            return rand.nextDouble() <= healthIncreaseRate;
+        }
+        return false;
+    }
+
     public static BattleStatistics applyBuff(BattleStatistics origin, BattleStatistics buff) {
         return new BattleStatistics(origin.health + buff.health, origin.attack + buff.attack,
-                origin.defence + buff.defence, origin.magnifier, origin.reducer, buff.isInvincible(), buff.isEnabled());
+                origin.defence + buff.defence, origin.magnifier, origin.reducer, buff.isInvincible(), buff.isEnabled(),
+                origin.healthIncreaseRate, origin.healthIncreaseAmount);
     }
 
     public double getHealth() {
@@ -108,5 +130,21 @@ public class BattleStatistics {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public double getHealthIncreaseRate() {
+        return healthIncreaseRate;
+    }
+
+    public double getHealthIncreaseAmount() {
+        return healthIncreaseAmount;
+    }
+
+    public void setHealthIncreaseRate(double healthIncreaseRate) {
+        this.healthIncreaseRate = healthIncreaseRate;
+    }
+
+    public void setHealthIncreaseAmount(double healthIncreaseAmount) {
+        this.healthIncreaseAmount = healthIncreaseAmount;
     }
 }

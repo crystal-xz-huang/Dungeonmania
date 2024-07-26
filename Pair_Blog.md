@@ -566,25 +566,34 @@ Sun Stone
 - A single battle consists of multiple rounds until one participant is defeated (dead)
 - With default player and enemy (zombie) config values, player takes 5 rounds to defeat a zombie
 
-### Choice 2 (Insert choice)
+### Choice 2 (Bosses)
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/18)
 
 **Assumptions**
 
-[Any assumptions made]
+- Hydra has the same default health and attack values as ZombieToast
+- Hydra has a default health increase rate of 0, and health increase rate is strictly between 0 and 1.
+- Hydra has a default increase health amount of 1.
 
 **Design**
 
-[Design]
+`Hydra` will extend from the `Enemy` base class and implement their own movement logic (which is identical to the `ZombieToast` class).
+
+As `Hydra` has the additional features `hydra_health_increase_rate` and `hydra_health_increase_amount`, we can add those fields to the `BattleStatistics` class, and update `battle()` which will check determine whether a target should be healed based on a given rate, and if so, increases the health. By default, all other entities will have a health increase rate and health increase amount of 0.
+
+To determine whether the target should be healed, we can use a use a random number generator to simulate the probability. We generate a random number between 0 and 1, and compare the random number to the healing rate. If the random number is less than or equal to the healing rate, the Hydra should be healed.
 
 **Changes after review**
 
-[Design review/Changes made]
+- Modified `DEFAULT_HEALTH_INCREASE_RATE` to `0.5` instead of `0`
 
 **Test list**
 
-[Test List]
+*Hydra*
+- Test movement and movement constraints is same as ZombieToast
+- Test hydra gains health with a health increase rate of 1 and health increase amount > 0.
+- Test hydra never gains health when health increase rate is 0.
 
 **Other notes**
 
