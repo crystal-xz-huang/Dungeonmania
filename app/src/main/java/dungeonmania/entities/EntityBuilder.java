@@ -8,6 +8,7 @@ import dungeonmania.entities.collectables.Key;
 import dungeonmania.entities.collectables.Sword;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
+import dungeonmania.entities.enemies.Assassin;
 import dungeonmania.entities.enemies.Hydra;
 import dungeonmania.entities.enemies.Mercenary;
 import dungeonmania.entities.enemies.Spider;
@@ -67,6 +68,18 @@ public class EntityBuilder {
         int mercenaryBribeRadius = config.optInt("bribe_radius", Mercenary.DEFAULT_BRIBE_RADIUS);
         return new Mercenary(pos, director.constructEnemyStatistics(mercenaryHealth, mercenaryAttack),
                 mercenaryBribeAmount, mercenaryBribeRadius, director.constructAllyStatistics(allyAttack, allyDefence));
+    }
+
+    public Assassin buildAssassin() {
+        double assassinHealth = config.optDouble("assassin_health", Assassin.DEFAULT_HEALTH);
+        double assassinAttack = config.optDouble("assassin_attack", Assassin.DEFAULT_ATTACK);
+        double allyAttack = config.optDouble("ally_attack", Mercenary.DEFAULT_HEALTH);
+        double allyDefence = config.optDouble("ally_defence", Mercenary.DEFAULT_ATTACK);
+        int assassinBribeAmount = config.optInt("assassin_bribe_amount", Assassin.DEFAULT_BRIBE_AMOUNT);
+        double assassinBribeFailRate = config.optDouble("assassin_bribe_fail_rate", Assassin.DEFAULT_BRIBE_FAIL_RATE);
+        int assassinBribeRadius = config.optInt("bribe_radius", Mercenary.DEFAULT_BRIBE_RADIUS);
+        return new Assassin(pos, director.constructEnemyStatistics(assassinHealth, assassinAttack), assassinBribeAmount,
+                assassinBribeRadius, assassinBribeFailRate, director.constructAllyStatistics(allyAttack, allyDefence));
     }
 
     public Hydra buildHydra() {

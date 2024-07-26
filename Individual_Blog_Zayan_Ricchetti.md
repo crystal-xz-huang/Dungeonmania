@@ -18,3 +18,4 @@
 ## Week 9
 
 - Completed Enemy Goal Task
+- Initial Design for Assassin
