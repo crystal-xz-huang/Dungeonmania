@@ -144,6 +144,8 @@ public class EntityFactory {
             return new SunStone(pos);
         case "hydra":
             return builder.buildHydra();
+        case "assassin":
+            return builder.buildAssassin();
         default:
             return null;
         }

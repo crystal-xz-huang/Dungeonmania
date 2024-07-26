@@ -73,7 +73,7 @@ public class Mercenary extends Enemy implements Interactable, Observer {
     /**
      * check whether the current merc can be bribed
      */
-    private boolean canBeBribed(Player player) {
+    public boolean canBeBribed(Player player) {
         return bribeRadius >= 0 && player.countEntityOfType(Treasure.class) >= bribeAmount;
     }
 
@@ -93,13 +93,9 @@ public class Mercenary extends Enemy implements Interactable, Observer {
         if (canBeBribed(player)) {
             player.bribe(bribeAmount);
         } else {
-            Sceptre sceptre = player.get(Sceptre.class);
-            mindControlDuration = sceptre.getDuration();
-            player.remove(sceptre);
-            game.attach(this);
+            useScepter(player, game);
         }
-        if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), getPosition()))
-            isAdjacentToPlayer = true;
+        moveAdjacent(player);
     }
 
     @Override
@@ -138,5 +134,25 @@ public class Mercenary extends Enemy implements Interactable, Observer {
         if (!allied)
             return super.getBattleStatistics();
         return allyStats;
+    }
+
+    public void setAllied(boolean allied) {
+        this.allied = allied;
+    }
+
+    public int getBribeAmount() {
+        return bribeAmount;
+    }
+
+    public void useScepter(Player player, Game game) {
+        Sceptre sceptre = player.get(Sceptre.class);
+        mindControlDuration = sceptre.getDuration();
+        player.remove(sceptre);
+        game.attach(this);
+    }
+
+    public void moveAdjacent(Player player) {
+        if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), getPosition()))
+            isAdjacentToPlayer = true;
     }
 }
