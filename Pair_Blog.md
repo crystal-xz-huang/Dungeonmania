@@ -401,16 +401,16 @@ Modified `BattleItem` to be an abstract class instead of an interface:
 
 ### a) Microevolution - Enemy Goal
 
-[Links to your merge requests](/put/links/here)
+[Links to your merge requests](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/13)
 
 **Assumptions**
 
-- The user inputs a positive integer
-- User doesn't input a value higher than amount of initial enemies
+- The user inputs a positive integer for any goal
+- User doesn't input a value higher than amount of initial enemies, initial treasure
 
 **Design**
 
-To implement this goal, we would create a new class `EnemyGoal` which extends `Goal`. 
+To implement this goal, we would create a new class `EnemyGoal` which extends `Goal`.
 
 Then we'd have to implement the `achieved(Game game)` function. This would have to check if the player has killed the required amount of enemies and that there are no more spawners left.
 
@@ -424,7 +424,7 @@ If both of these comparisons are true, the `achieved(Game game)` function would 
 
 So I would just modify the blog post design part to this:
 
-To implement this goal, we would create a new class `EnemyGoal` which extends `Goal`. 
+To implement this goal, we would create a new class `EnemyGoal` which extends `Goal`.
 
 Then we'd have to implement the `achieved(Game game)` function. This would have to check if the player has killed the required amount of enemies and that there are no more spawners left.
 
@@ -657,4 +657,79 @@ For the default values, the health, attack, and bribe amount have been increased
 
 [Briefly explain what you did]
 
-Add all other changes you made in the same format here:
+The specification states that "The Player can carry only one key at a time". However, the existing MVP implementation does not implement this restriction. The player simply adds the key to their inventory on overlap:
+```java
+public class Key extends Entity implements InventoryItem {
+    \\...
+    @Override
+    public void onOverlap(GameMap map, Entity entity) {
+        if (entity instanceof Player) {
+            if (!((Player) entity).pickUp(this))
+                return;
+            map.destroyEntity(this);
+        }
+    }
+```
+Additionally, the test provided in `DoorsKeyTest.java` does not correctly assert this constraint. It incorrectly asserts that the number of keys in the inventory is 2 instead of 1 after picking up 2 keys.
+```java
+@Test
+@Tag("4-4")
+@DisplayName("Test player cannot pickup two keys at the same time")
+public void cannotPickupTwoKeys() {
+    DungeonManiaController dmc;
+    dmc = new DungeonManiaController();
+    DungeonResponse res = dmc.newGame("d_DoorsKeysTest_cannotPickupTwoKeys", "c_DoorsKeysTest_cannotPickupTwoKeys");
+
+    assertEquals(2, TestUtils.getEntities(res, "key").size());
+
+    // pick up key_1
+    res = dmc.tick(Direction.RIGHT);
+    assertEquals(1, TestUtils.getInventory(res, "key").size());
+    assertEquals(1, TestUtils.getEntities(res, "key").size());
+
+    // pick up key_2
+    res = dmc.tick(Direction.RIGHT);
+    assertEquals(2, TestUtils.getInventory(res, "key").size());
+    assertEquals(0, TestUtils.getEntities(res, "key").size());
+}
+```
+
+To fix this, we can override `onOverlap()` inherited from `InventoryItem` and add an additional check to ensure that the player does not pick up a key if they already have a key:
+```java
+@Override
+public void onOverlap(GameMap map, Entity entity) {
+    if (entity instanceof Player) {
+        Player player = (Player) entity;
+        if (player.countEntityOfType(Key.class) >= 1) {
+            return;
+        }
+        if (player.pickUp(this)) {
+            map.destroyEntity(this);
+        }
+    }
+}
+```
+Then we modify the test to assert that the number of keys in the inventory and number of keys on the map remains unchanged when the player attempts to pick up a second key:
+
+```java
+@Test
+@Tag("4-4")
+@DisplayName("Test player cannot pickup two keys at the same time")
+public void cannotPickupTwoKeys() {
+    DungeonManiaController dmc;
+    dmc = new DungeonManiaController();
+    DungeonResponse res = dmc.newGame("d_DoorsKeysTest_cannotPickupTwoKeys", "c_DoorsKeysTest_cannotPickupTwoKeys");
+
+    assertEquals(2, TestUtils.getEntities(res, "key").size());
+
+    // pick up key_1
+    res = dmc.tick(Direction.RIGHT);
+    assertEquals(1, TestUtils.getInventory(res, "key").size());
+    assertEquals(1, TestUtils.getEntities(res, "key").size());
+
+    // pick up key_2
+    res = dmc.tick(Direction.RIGHT);
+    assertEquals(1, TestUtils.getInventory(res, "key").size());
+    assertEquals(1, TestUtils.getEntities(res, "key").size());
+}
+```

@@ -182,7 +182,6 @@ public class Game implements Subject {
         addingSub = new PriorityQueue<>();
         sub = nextTickSub;
         tickCount++;
-        // notify observers - decrement mercenaries mind control duration
         notifyObservers();
         return tickCount;
     }
@@ -261,10 +260,6 @@ public class Game implements Subject {
         observers.remove(o);
     }
 
-    /**
-     * UPDATES:
-     * Decrement mind control duration for all mercenaries
-     */
     @Override
     public void notifyObservers() {
         Iterator<Observer> iterator = observers.iterator();

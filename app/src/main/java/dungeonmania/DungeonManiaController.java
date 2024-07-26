@@ -1,5 +1,13 @@
 package dungeonmania;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.json.JSONException;
@@ -114,4 +122,63 @@ public class DungeonManiaController {
         return null;
     }
 
+    /**
+    * /game/save
+    */
+    public DungeonResponse saveGame(String name) throws IllegalArgumentException {
+        String dirPath = "app/src/main/java/dungeonmania/saved/";
+        String filePath = dirPath + name + ".ser";
+
+        try {
+            Path path = Paths.get(dirPath);
+            if (!Files.exists(path)) {
+                Files.createDirectories(path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to create directory");
+            return null;
+        }
+
+        try {
+            FileOutputStream fos = new FileOutputStream(filePath);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(game);
+            oos.close();
+            fos.close();
+            System.out.println("Game saved to " + new File(filePath).getAbsolutePath());
+            return ResponseBuilder.getDungeonResponse(game);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to save game");
+            return null;
+        }
+    }
+
+    /**
+     * /game/load
+     */
+    public DungeonResponse loadGame(String name) throws IllegalArgumentException {
+        String filePath = "app/src/main/java/dungeonmania/saved/" + name + ".ser";
+        try {
+            FileInputStream fis = new FileInputStream(filePath);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            game = (Game) ois.readObject();
+            ois.close();
+            fis.close();
+            System.out.println("Game loaded from " + new File(filePath).getAbsolutePath());
+            return ResponseBuilder.getDungeonResponse(game);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to load game");
+            return null;
+        }
+    }
+
+    /**
+     * /game/all
+     */
+    public List<String> allGames() {
+        return FileLoader.listFileNamesInResourceDirectory("saved");
+    }
 }
