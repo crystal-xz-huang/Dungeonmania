@@ -13,7 +13,7 @@ public class AndGoal implements Goal {
 
     @Override
     public boolean achieved(Game game) {
-        if (game == null)
+        if (game.getPlayer() == null || game.getTick() == 0)
             return false;
         return goal1.achieved(game) && goal2.achieved(game);
     }

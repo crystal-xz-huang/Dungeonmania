@@ -649,7 +649,7 @@ For the default values, the health, attack, and bribe amount have been increased
 
 ## Task 3) Investigation Task ⁉️
 
-[Merge Request 1](/put/links/here)
+[Merge Request 1](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/20)
 
 In the MVP implementation, the ability to destroy `ZombieToastSpawner` was not implemented. The function `interact(Player player, Game game)` was meant to destroy the spawner, yet it originally looked like this:
 ```java
@@ -667,7 +667,7 @@ This function would use the player's weapon but it wouldn't destroy the spawner.
     }
 ```
 
-[Merge Request 2](/put/links/here)
+[Merge Request 2](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/21)
 
 [Briefly explain what you did]
 
@@ -745,5 +745,21 @@ public void cannotPickupTwoKeys() {
     res = dmc.tick(Direction.RIGHT);
     assertEquals(1, TestUtils.getInventory(res, "key").size());
     assertEquals(1, TestUtils.getEntities(res, "key").size());
+}
+```
+
+[Merge Request 3](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/22)
+
+The specification states that "Goals are only evaluated after the first tick." and defines that "A tick always starts with user input". From the given phase sequence diagram, we see that when a new game is created, it starts at `tick = 0`, and after user input (player action), the game transitions to `tick = 1`.
+
+In the `DungeonManiaController`, we see that both creating a new game and user input calls the `getDungeonResponse()`. The goal evaluation is done every time the `getDungeonResponse()` method is called, through `game.getGoals().achieved(game)`. However, the existing implementation of the achieved method does not check that the first tick has passed. Therefore, the goal evaluation is done at the start of the game, on the first tick.
+
+To implement this required behaviour, we add an additional check to each goal class to ensure that the goal not evaluated if the current game tick is 0:
+```java
+@Override
+public boolean achieved(Game game) {
+    if (game == null || game.getTick() == 0)
+        return false;
+    return goal1.achieved(game) && goal2.achieved(game);
 }
 ```

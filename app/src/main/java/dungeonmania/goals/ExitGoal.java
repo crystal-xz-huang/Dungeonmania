@@ -11,7 +11,7 @@ import dungeonmania.util.Position;
 public class ExitGoal implements Goal {
     @Override
     public boolean achieved(Game game) {
-        if (game == null)
+        if (game.getPlayer() == null || game.getTick() == 0)
             return false;
         Player character = game.getPlayer();
         Position pos = character.getPosition();

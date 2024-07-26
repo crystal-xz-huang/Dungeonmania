@@ -169,4 +169,27 @@ public class BasicGoalsTest {
         // assert goal met
         assertEquals("", TestUtils.getGoals(res));
     }
+
+    // @Test
+    // @Tag("13-7")
+    // @DisplayName("Test goal is only evaluated after the first tick")
+    // public void noEnemies() throws IllegalArgumentException, InvalidActionException {
+    //     DungeonManiaController dmc;
+    //     dmc = new DungeonManiaController();
+    //     // Enemy goal is 0 and there are no enemies
+    //     DungeonResponse res = dmc.newGame("d_basicGoalsTest_noEnemies", "c_basicGoalsTest_enemySpawner");
+
+    //     // check that there are no enemies
+    //     assertEquals(0, TestUtils.countType(res, "zombie_toast_spawner"));
+    //     assertEquals(1, TestUtils.countType(res, "player"));
+
+    //     // assert goal not met
+    //     assertTrue(TestUtils.getGoals(res).contains(":enemies"));
+
+    //     // collect sword
+    //     dmc.tick(Direction.DOWN);
+
+    //     // assert goal met after first tick
+    //     assertEquals("", TestUtils.getGoals(res));
+    // }
 }

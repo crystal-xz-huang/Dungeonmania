@@ -1,7 +1,6 @@
 package dungeonmania;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import dungeonmania.battles.BattleFacade;
 import dungeonmania.entities.Entity;
@@ -26,8 +25,8 @@ public class Game implements Subject {
     private Player player;
     private BattleFacade battleFacade;
     private EntityFactory entityFactory;
+    private int enemiesDefeated;
     private boolean isInTick = false;
-    private int enemiesDefeated = 0;
     public static final int PLAYER_MOVEMENT = 0;
     public static final int PLAYER_MOVEMENT_CALLBACK = 1;
     public static final int AI_MOVEMENT = 2;
@@ -53,6 +52,7 @@ public class Game implements Subject {
         this.tickCount = 0;
         player = map.getPlayer();
         register(() -> player.onTick(tickCount), PLAYER_MOVEMENT, "potionQueue");
+        this.enemiesDefeated = 0;
     }
 
     /**
@@ -99,7 +99,7 @@ public class Game implements Subject {
         }
         if (enemy.getHealth() <= 0) {
             map.destroyEntity(enemy);
-            enemyDefeated();
+            this.enemiesDefeated += 1;
         }
     }
 
@@ -234,8 +234,8 @@ public class Game implements Subject {
         return battleFacade;
     }
 
-    public <T> List<T> getEntities(Class<T> clz) {
-        return map.getEntities().stream().filter(clz::isInstance).map(clz::cast).collect(Collectors.toList());
+    public <T extends Entity> List<T> getEntities(Class<T> type) {
+        return map.getEntities(type);
     }
 
     public void destroyEntity(Entity entity) {
@@ -246,12 +246,8 @@ public class Game implements Subject {
         player.remove(item);
     }
 
-    public void enemyDefeated() {
-        enemiesDefeated++;
-    }
-
     public int getEnemiesDefeated() {
-        return enemiesDefeated;
+        return this.enemiesDefeated;
     }
 
     @Override
