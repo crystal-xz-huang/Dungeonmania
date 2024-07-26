@@ -93,6 +93,10 @@ public class Player extends Battleable {
         return inventory;
     }
 
+    public BattleItem getWeapon() {
+        return inventory.getWeapon();
+    }
+
     public Potion getEffectivePotion() {
         return inEffective;
     }

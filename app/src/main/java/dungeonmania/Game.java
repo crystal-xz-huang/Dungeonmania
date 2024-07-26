@@ -239,6 +239,10 @@ public class Game implements Subject {
         return map.getEntities().stream().filter(clz::isInstance).map(clz::cast).collect(Collectors.toList());
     }
 
+    public void destroyEntity(Entity entity) {
+        map.destroyEntity(entity);
+    }
+
     public void remove(InventoryItem item) {
         player.remove(item);
     }

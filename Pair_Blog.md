@@ -627,7 +627,21 @@ To determine whether the target should be healed, we can use a use a random numb
 
 [Merge Request 1](/put/links/here)
 
-[Briefly explain what you did]
+In the MVP implementation, the ability to destroy `ZombieToastSpawner` was not implemented. The function `interact(Player player, Game game)` was meant to destroy the spawner, yet it originally looked like this:
+```java
+    @Override
+    public void interact(Player player, Game game) {
+        player.getInventory().getWeapon().use(game);
+    }
+```
+This function would use the player's weapon but it wouldn't destroy the spawner. We fixed this by adding the line `game.destroyEntity(this);`, which would destroy the given spawner when interacting with the player.
+```java
+    @Override
+    public void interact(Player player, Game game) {
+        player.getWeapon().use(game);
+        game.destroyEntity(this);
+    }
+```
 
 [Merge Request 2](/put/links/here)
 
