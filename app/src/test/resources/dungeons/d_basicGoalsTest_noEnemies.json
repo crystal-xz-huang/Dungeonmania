@@ -1,0 +1,17 @@
+{
+    "entities": [
+        {
+            "x": 1,
+            "y": 1,
+            "type": "player"
+        },
+        {
+            "x": 1,
+            "y": 2,
+            "type": "sword"
+        }
+    ],
+    "goal-condition": {
+        "goal": "enemies"
+    }
+}

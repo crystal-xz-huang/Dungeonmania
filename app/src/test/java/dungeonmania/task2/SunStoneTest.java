@@ -22,6 +22,8 @@ public class SunStoneTest {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_sunstoneTest_treasureGoal", "c_sunstoneTest_treasureGoal");
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":treasure"));
 
         // goal is to collect 3 treasures
         assertTrue(TestUtils.getGoals(res).contains(":treasure"));
@@ -54,8 +56,7 @@ public class SunStoneTest {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame("d_sunstoneTest_treasureGoal", "c_sunstoneTest_treasureGoal");
-
-        // goal is to collect 3 treasures
+        // assert goal not met
         assertTrue(TestUtils.getGoals(res).contains(":treasure"));
 
         // pick up treasure

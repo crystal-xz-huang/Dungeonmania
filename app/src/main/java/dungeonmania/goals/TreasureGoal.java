@@ -11,7 +11,7 @@ public class TreasureGoal implements Goal {
 
     @Override
     public boolean achieved(Game game) {
-        if (game == null)
+        if (game.getPlayer() == null || game.getTick() == 0)
             return false;
         return game.getCollectedTreasureCount() >= target;
     }

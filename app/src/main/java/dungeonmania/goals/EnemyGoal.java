@@ -12,19 +12,15 @@ public class EnemyGoal implements Goal {
 
     @Override
     public boolean achieved(Game game) {
-        if (game == null)
+        if (game.getPlayer() == null || game.getTick() == 0)
             return false;
         int enemiesDefeated = game.getEnemiesDefeated();
         int spawnerCount = game.getEntities(ZombieToastSpawner.class).size();
-        if (enemiesDefeated >= enemyGoal && spawnerCount == 0)
-            return true;
-        return false;
+        return enemiesDefeated >= enemyGoal && spawnerCount == 0;
     }
 
     @Override
     public String toString(Game game) {
-        if (this.achieved(game))
-            return "";
-        return ":enemies";
+        return (this.achieved(game) ? "" : ":enemies");
     }
 }
