@@ -669,8 +669,6 @@ This function would use the player's weapon but it wouldn't destroy the spawner.
 
 [Merge Request 2](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/21)
 
-[Briefly explain what you did]
-
 The specification states that "The Player can carry only one key at a time". However, the existing MVP implementation does not implement this restriction. The player simply adds the key to their inventory on overlap:
 ```java
 public class Key extends Entity implements InventoryItem {
@@ -763,3 +761,22 @@ public boolean achieved(Game game) {
     return goal1.achieved(game) && goal2.achieved(game);
 }
 ```
+
+[Merge Request 4](https://nw-syd-gitlab.cseunsw.tech/COMP2511/24T2/teams/W15B_MUSHROOM/assignment-ii/-/merge_requests/23)
+
+The MVP implementation does not count the enemies/allies destroyed when a bomb explodes towards the enemy goal. Although it is an approved assumption that "Whether allies destroyed by a player-placed bomb count towards the enemy goal is undefined", since a bomb only explodes when it is placed on the map by the player (next to an active switch or a switch that becomes active), this can be considered a player action that destroys an enemy. Therefore, to include the enemies (not allies) that are destroyed during a bomb explosion, we can update `map.destroyEntity()` to increment the enemy defeated count when called:
+```java
+public class GameMap {
+    // ...
+    public void destroyEntity(Entity entity) {
+        if (entity instanceof Enemy && !((Enemy) entity).isAllied()) {
+            this.enemiesDefeated += 1;
+        }
+        removeNode(entity);
+        entity.onDestroy(this);
+    }
+}
+```
+As `destroyEntity()` is called after a battle when the enemy's health is <= 0 also when a bomb explodes and entities are destroyed, this will work to correctly update the enemy killed count in one place, the `GameMap`.
+
+New tests are added in `EnemyGoalTest.java` to verify the correct implementation.

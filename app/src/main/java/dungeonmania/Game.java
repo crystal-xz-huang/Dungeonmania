@@ -25,7 +25,6 @@ public class Game implements Subject {
     private Player player;
     private BattleFacade battleFacade;
     private EntityFactory entityFactory;
-    private int enemiesDefeated;
     private boolean isInTick = false;
     public static final int PLAYER_MOVEMENT = 0;
     public static final int PLAYER_MOVEMENT_CALLBACK = 1;
@@ -52,7 +51,6 @@ public class Game implements Subject {
         this.tickCount = 0;
         player = map.getPlayer();
         register(() -> player.onTick(tickCount), PLAYER_MOVEMENT, "potionQueue");
-        this.enemiesDefeated = 0;
     }
 
     /**
@@ -99,7 +97,6 @@ public class Game implements Subject {
         }
         if (enemy.getHealth() <= 0) {
             map.destroyEntity(enemy);
-            this.enemiesDefeated += 1;
         }
     }
 
@@ -247,7 +244,7 @@ public class Game implements Subject {
     }
 
     public int getEnemiesDefeated() {
-        return this.enemiesDefeated;
+        return map.getEnemiesDefeated();
     }
 
     @Override
