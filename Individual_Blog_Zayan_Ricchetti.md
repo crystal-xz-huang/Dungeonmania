@@ -19,3 +19,5 @@
 
 - Completed Enemy Goal Task
 - Initial Design for Assassin
+- Complete Design for Assassin
+- Task 3 Part 1
