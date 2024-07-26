@@ -22,6 +22,7 @@ public class GameMap {
     private Game game;
     private Map<Position, GraphNode> nodes = new HashMap<>();
     private Player player;
+    private int enemiesDefeated = 0;
 
     /**
      * Initialise the game map
@@ -197,6 +198,9 @@ public class GameMap {
     }
 
     public void destroyEntity(Entity entity) {
+        if (entity instanceof Enemy && !((Enemy) entity).isAllied()) {
+            this.enemiesDefeated += 1;
+        }
         removeNode(entity);
         entity.onDestroy(this);
     }
@@ -259,5 +263,9 @@ public class GameMap {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public int getEnemiesDefeated() {
+        return enemiesDefeated;
     }
 }

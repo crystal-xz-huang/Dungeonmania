@@ -1,0 +1,52 @@
+{
+    "entities": [
+        {
+            "type": "player",
+            "x": 2,
+            "y": 2
+        },
+        {
+            "type": "boulder",
+            "x": 3,
+            "y": 2
+        },
+        {
+            "type": "switch",
+            "x": 4,
+            "y": 2
+        },
+        {
+            "x": 5,
+            "y": 3,
+            "type": "zombie_toast"
+        },
+        {
+            "type": "bomb",
+            "x": 3,
+            "y": 3
+        },
+        {
+            "x": 6,
+            "y": 3,
+            "type": "mercenary"
+        },
+        {
+            "x": 5,
+            "y": 4,
+            "type": "assassin"
+        },
+        {
+            "x": 4,
+            "y": 5,
+            "type": "hydra"
+        },
+        {
+            "type": "exit",
+            "x": 8,
+            "y": 8
+        }
+    ],
+    "goal-condition": {
+        "goal": "enemies"
+    }
+}
