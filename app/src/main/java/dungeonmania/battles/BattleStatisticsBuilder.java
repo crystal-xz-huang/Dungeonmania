@@ -4,10 +4,12 @@ public class BattleStatisticsBuilder {
     private double health;
     private double attack;
     private double defence;
-    private double magnifier = 1; // Default value
-    private double reducer = 1; // Default value
-    private boolean invincible = false; // Default value
-    private boolean enabled = true; // Default value
+    private double magnifier = 1;
+    private double reducer = 1;
+    private boolean invincible = false;
+    private boolean enabled = true;
+    private double healthIncreaseRate = 0;
+    private double healthIncreaseAmount = 0;
 
     public BattleStatisticsBuilder setHealth(double health) {
         this.health = health;
@@ -44,7 +46,18 @@ public class BattleStatisticsBuilder {
         return this;
     }
 
+    public BattleStatisticsBuilder setHealthIncreaseRate(double healthIncreaseRate) {
+        this.healthIncreaseRate = healthIncreaseRate;
+        return this;
+    }
+
+    public BattleStatisticsBuilder setHealthIncreaseAmount(double healthIncreaseAmount) {
+        this.healthIncreaseAmount = healthIncreaseAmount;
+        return this;
+    }
+
     public BattleStatistics build() {
-        return new BattleStatistics(health, attack, defence, magnifier, reducer, invincible, enabled);
+        return new BattleStatistics(health, attack, defence, magnifier, reducer, invincible, enabled,
+                healthIncreaseRate, healthIncreaseAmount);
     }
 }

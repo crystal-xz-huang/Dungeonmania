@@ -1,0 +1,8 @@
+{
+    "player_attack": 10,
+    "player_health": 50,
+    "hydra_attack": 10000,
+    "hydra_health": 5,
+    "hydra_health_increase_rate": 1,
+    "hydra_health_increase_amount": 10
+}

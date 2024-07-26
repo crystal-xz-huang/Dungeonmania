@@ -1,6 +1,7 @@
 package dungeonmania.battles;
 
 import dungeonmania.entities.buildables.Bow;
+import dungeonmania.entities.enemies.Hydra;
 
 public class BattleStatisticsDirector {
     public BattleStatistics constructBaseStatistics() {
@@ -49,5 +50,12 @@ public class BattleStatisticsDirector {
 
     public BattleStatistics constructSceptreStatistics() {
         return new BattleStatisticsBuilder().build();
+    }
+
+    public BattleStatistics constructHydraStatistics(double healthIncreaseRate, double healthIncreaseAmount) {
+        return new BattleStatisticsBuilder().setHealth(Hydra.DEFAULT_HEALTH).setAttack(Hydra.DEFAULT_ATTACK)
+                .setMagnifier(BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER)
+                .setReducer(BattleStatistics.DEFAULT_ENEMY_DAMAGE_REDUCER).setHealthIncreaseRate(healthIncreaseRate)
+                .setHealthIncreaseAmount(healthIncreaseAmount).build();
     }
 }
